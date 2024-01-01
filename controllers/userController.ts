@@ -1,10 +1,10 @@
 export {};
 const asyncHandler = require("express-async-handler");
-const User = require("../models/userModel.ts");
-const Referral = require("../models/referralModel.ts");
-const generateToken = require("../utils/generateToken.ts");
-const generateRanNum = require("../utils/generateRanNum.ts");
-const generateUid = require("../utils/generateUid.ts");
+const User = require("../models/userModel");
+const Referral = require("../models/referralModel");
+const generateToken = require("../utils/generateToken");
+const generateRanNum = require("../utils/generateRanNum");
+const generateUid = require("../utils/generateUid");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 // const sgTransport = require("nodemailer-sendgrid-transport");

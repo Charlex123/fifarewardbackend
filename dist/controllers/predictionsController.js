@@ -1,14 +1,23 @@
-export {};
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const asyncHandler = require("express-async-handler");
 const Fixtures = require("../models/fixturesModel");
 const Leagues = require("../models/leaguesModel");
 const generateToken = require("../utils/generateToken");
 const generateRanNum = require("../utils/generateRanNum");
 const generateUid = require("../utils/generateUid");
-const axios = require("axios") 
+const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
-
-(async () => {
+(() => __awaiter(void 0, void 0, void 0, function* () {
     // try {
     //     const fixtures = await Fixtures.find();
     //     if(fixtures) {
@@ -28,7 +37,6 @@ const { v4: uuidv4 } = require("uuid");
     //                 console.log('predictionsresponse',predictionsresponse)
     //                 // if(predictionsresponse.length != 0) {
     //                 //     for(let i=0;i<predictionsresponse.length;i++) {
-                        
     //                 //         const fid = `${
     //                 //             Math.floor(100000000 + Math.random() * 900000000)
     //                 //         }`;
@@ -51,26 +59,21 @@ const { v4: uuidv4 } = require("uuid");
     //                 //                 // console.log('Fixture created successfully')
     //                 //             }
     //                 //         }
-                            
     //                 //     }
     //                 // }else {
-
     //                 // }
-                    
     //               })
     //               .catch(function (error:any) {
     //                 console.log(error);
     //               });
     //         }
     //     }
-
     //     }catch(error) 
     //     {
     // //   console.log(error)
     // }
-})();
-
-const loadFixtures = asyncHandler(async (req:any,res:any) => {
-    console.log('hrer')    
-  })
-module.exports = { loadFixtures } 
+}))();
+const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('hrer');
+}));
+module.exports = { loadFixtures };

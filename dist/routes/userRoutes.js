@@ -1,25 +1,9 @@
-export {};
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const {
-  authUser,
-  registerUser,
-  resendverificationMail,
-  updateUserProfile,
-  verifyUser,
-  updateTransactionPin,
-  resetPassword,
-  checkEmail,
-  checkUserName,
-  activateAccount,
-  checkForgotEmail,
-  getReferrals,
-  updateWalletAddress,
-  getSponsor,
-  getWalletAddress
-} = require("../controllers/userController");
+const { authUser, registerUser, resendverificationMail, updateUserProfile, verifyUser, updateTransactionPin, resetPassword, checkEmail, checkUserName, activateAccount, checkForgotEmail, getReferrals, updateWalletAddress, getSponsor, getWalletAddress } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
-
 router.post("/register", registerUser);
 router.post("/verify", verifyUser);
 router.post("/getsponsorwalletaddress", getSponsor);
@@ -35,5 +19,4 @@ router.post("/resetpassword", resetPassword);
 router.post("/updatetransactionpin", updateTransactionPin);
 router.post("/signin", authUser);
 router.route("/profile").post(protect, updateUserProfile);
-
 module.exports = router;

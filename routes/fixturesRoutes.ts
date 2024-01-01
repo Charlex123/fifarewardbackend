@@ -3,7 +3,7 @@ const fixturesRoute = require('express').Router();
 const express = require("express");
 const {
     loadFixtures
-} = require("../controllers/fixturesController.ts");
+} = require("../controllers/fixturesController");
 const router = express.Router();
 
 router.get("/:fixtures", loadFixtures);

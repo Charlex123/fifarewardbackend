@@ -3,7 +3,7 @@ const predictionsRoute = require('express').Router();
 const express = require("express");
 const {
     getpredictions
-} = require("../controllers/predictionsController.ts");
+} = require("../controllers/predictionsController");
 const router = express.Router();
 
 router.get("/:predictions", getpredictions);

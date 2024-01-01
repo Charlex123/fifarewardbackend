@@ -1,7 +1,6 @@
+"use strict";
 var mongoose = require(mongoose);
-
-const PrematchOddsschema = mongoose.Schema(
-{
+const PrematchOddsschema = mongoose.Schema({
     oddid: {
         type: Number
     },
@@ -64,8 +63,6 @@ const PrematchOddsschema = mongoose.Schema(
     odds: {
         type: Array
     }
-})
-
+});
 const PrematchOdds = mongoose.model("PrematchOdds", PrematchOddsschema);
-
 module.exports = PrematchOdds;
