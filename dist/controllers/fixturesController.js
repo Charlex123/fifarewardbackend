@@ -17,6 +17,7 @@ const generateRanNum = require("../utils/generateRanNum");
 const generateUid = require("../utils/generateUid");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
+console.log('fixtures ran');
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // try {
     //     const leagues = await Leagues.find();
@@ -73,6 +74,8 @@ const { v4: uuidv4 } = require("uuid");
     // }
 }))();
 const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('hrer');
+    res.json({
+        "message": "successss"
+    });
 }));
 module.exports = { loadFixtures };

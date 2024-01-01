@@ -4,5 +4,5 @@ const fixturesRoute = require('express').Router();
 const express = require("express");
 const { loadFixtures } = require("../controllers/fixturesController");
 const router = express.Router();
-router.get("/:fixtures", loadFixtures);
-module.exports = fixturesRoute;
+router.get("/loadfixtures", loadFixtures);
+module.exports = router;

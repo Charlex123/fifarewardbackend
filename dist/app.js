@@ -6,6 +6,8 @@ const connectDB = require("./config/db");
 const path = require("path");
 const cors = require('cors');
 const userRoutes = require("./routes/userRoutes");
+const leaguesRoutes = require('./routes/leaguesRoutes');
+const fixturesRoutes = require('./routes/fixturesRoutes');
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 const OpenAI = require('openai');
 dotenv.config();
@@ -16,16 +18,6 @@ const openai = new OpenAI({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
 app.use(express.json()); // to accept json data
-const leaguesRoute = require('./routes/leaguesRoutes');
-const fixturesRoute = require('./routes/fixturesRoutes');
-// const predictionsRoute = require('./routes/predictionsRoutes')
-app.use(cors());
-// app.use("/api/notes", noteRoutes);
-app.use("/api/users", userRoutes);
-// --------------------------deployment------------------------------
-app.use('/leagues', leaguesRoute);
-app.use('/fixtures', fixturesRoute);
-// app.use('/predictions',predictionsRoute );
 if (process.env.NODE_ENV === "production") {
     app.get("/", (req, res) => {
         res.send("API is running..");
@@ -47,5 +39,13 @@ else {
 // Error Handling middlewares
 app.use(notFound);
 app.use(errorHandler);
+// --------------------------deployment------------------------------
+// const predictionsRoute = require('./routes/predictionsRoutes')
+app.use(cors());
+// app.use("/api/notes", noteRoutes);
+app.use("/api/users", userRoutes);
+app.use('/api/leagues', leaguesRoutes);
+app.use('/api/fixtures', fixturesRoutes);
+// app.use('/predictions',predictionsRoute );
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}..`));

@@ -1,11 +1,8 @@
 export {};
-const fixturesRoute = require('express').Router();
 const express = require("express");
-const {
-    loadFixtures
-} = require("../controllers/fixturesController");
+const { loadFixtures } = require("../controllers/fixturesController");
 const router = express.Router();
 
-router.get("/:fixtures", loadFixtures);
+router.get("/loadfixtures", loadFixtures);
 
-module.exports=fixturesRoute;
+module.exports = router;

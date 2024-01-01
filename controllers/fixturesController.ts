@@ -8,6 +8,7 @@ const generateUid = require("../utils/generateUid");
 const axios = require("axios") 
 const { v4: uuidv4 } = require("uuid");
 
+console.log('fixtures ran');
 (async () => {
     // try {
     //     const leagues = await Leagues.find();
@@ -70,6 +71,10 @@ const { v4: uuidv4 } = require("uuid");
 })();
 
 const loadFixtures = asyncHandler(async (req:any,res:any) => {
-    console.log('hrer')    
+
+    const fixtures = await Fixtures.find();
+    res.json({
+      "fixtures":fixtures
+    })  
   })
 module.exports = { loadFixtures } 
