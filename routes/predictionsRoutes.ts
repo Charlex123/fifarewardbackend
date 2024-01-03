@@ -1,10 +1,10 @@
 export {};
 const express = require("express");
 const {
-    getpredictions
+    loadPredictions
 } = require("../controllers/predictionsController");
 const router = express.Router();
 
-router.get("/predictions", getpredictions);
+router.get("/predictions", loadPredictions);
 
 module.exports=router;

@@ -1,0 +1,37 @@
+predictionsresponse [
+    {
+      predictions: {
+        winner: [Object],
+        win_or_draw: true,
+        under_over: null,
+        goals: [Object],
+        advice: 'Double chance : FK Kukesi or draw',
+        percent: [Object]
+      },
+      league: {
+        id: 310,
+        name: 'Superliga',
+        country: 'Albania',
+        logo: 'https://media-4.api-sports.io/football/leagues/310.png',
+        flag: 'https://media-4.api-sports.io/flags/al.svg',
+        season: 2023
+      },
+      teams: { home: [Object], away: [Object] },
+      comparison: {
+        form: [Object],
+        att: [Object],
+        def: [Object],
+        poisson_distribution: [Object],
+        h2h: [Object],
+        goals: [Object],
+        total: [Object]
+      },
+      h2h: [
+        [Object], [Object],
+        [Object], [Object],
+        [Object], [Object],
+        [Object], [Object],
+        [Object]
+      ]
+    }
+  ]
