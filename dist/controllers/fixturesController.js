@@ -74,8 +74,43 @@ console.log('fixtures ran');
     // }
 }))();
 const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const fixtures = yield Fixtures.aggregate([
+        {
+            // Group fixtures by league ID
+            $group: {
+                _id: "$league.id",
+                leagueName: { $first: "$league.name" },
+                country: { $first: "$league.country" },
+                fixtures: { $push: "$$ROOT" } // Pushing the entire document into fixtures array
+            }
+        },
+        {
+            // Group leagues by country
+            $group: {
+                _id: "$country",
+                leagues: {
+                    $push: {
+                        leagueId: "$_id",
+                        leagueName: "$leagueName",
+                        fixtures: "$fixtures"
+                    }
+                }
+            }
+        },
+        {
+            // Optionally, you can sort the results by country name
+            $sort: { _id: 1 }
+        }
+    ]);
     res.json({
-        "message": "successss"
+        "fixtures": fixtures
     });
 }));
-module.exports = { loadFixtures };
+const loadleagueFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const leagueId = req.body.leagueid;
+    const leaguefixtures = yield Fixtures.find({ "league.id": leagueId });
+    res.json({
+        "leaguefixtures": leaguefixtures
+    });
+}));
+module.exports = { loadFixtures, loadleagueFixtures };

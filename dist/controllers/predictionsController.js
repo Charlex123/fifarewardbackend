@@ -19,6 +19,7 @@ const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // try {
+    //   console.log('hopppppaweee')
     //     const fixtures = await Fixtures.find();
     //     if(fixtures) {
     //         for(let l=0; l<fixtures.length; l++) {
@@ -73,7 +74,7 @@ const { v4: uuidv4 } = require("uuid");
     // //   console.log(error)
     // }
 }))();
-const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const loadPredictions = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('hrer');
 }));
-module.exports = { loadFixtures };
+module.exports = { loadPredictions };

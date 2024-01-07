@@ -8,6 +8,8 @@ const cors = require('cors');
 const userRoutes = require("./routes/userRoutes");
 const leaguesRoutes = require('./routes/leaguesRoutes');
 const fixturesRoutes = require('./routes/fixturesRoutes');
+const countriesRoutes = require('./routes/countryRoutes');
+const predictionsRoutes = require('./routes/predictionsRoutes');
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 const OpenAI = require('openai');
 dotenv.config();
@@ -36,9 +38,6 @@ else {
 //   });
 // }
 // main();
-// Error Handling middlewares
-app.use(notFound);
-app.use(errorHandler);
 // --------------------------deployment------------------------------
 // const predictionsRoute = require('./routes/predictionsRoutes')
 app.use(cors());
@@ -46,6 +45,11 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use('/api/leagues', leaguesRoutes);
 app.use('/api/fixtures', fixturesRoutes);
-// app.use('/predictions',predictionsRoute );
+app.use('/api/leaguefixtures', fixturesRoutes);
+app.use('/api/countries', countriesRoutes);
+app.use('/api/predictions', predictionsRoutes);
+// Error Handling middlewares
+app.use(notFound);
+app.use(errorHandler);
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}..`));
