@@ -72,9 +72,48 @@ console.log('fixtures ran');
 
 const loadFixtures = asyncHandler(async (req:any,res:any) => {
 
-    const fixtures = await Fixtures.find();
+    const fixtures = await Fixtures.aggregate([
+      {
+        // Group fixtures by league ID
+        $group: {
+          _id: "$league.id",
+          leagueName: { $first: "$league.name" },
+          country: { $first: "$league.country" },
+          fixtures: { $push: "$$ROOT" } // Pushing the entire document into fixtures array
+        }
+      },
+      {
+        // Group leagues by country
+        $group: {
+          _id: "$country",
+          leagues: {
+            $push: {
+              leagueId: "$_id",
+              leagueName: "$leagueName",
+              fixtures: "$fixtures"
+            }
+          }
+        }
+      },
+      {
+        // Optionally, you can sort the results by country name
+        $sort: { _id: 1 }
+      }
+    ]);
+      
     res.json({
       "fixtures":fixtures
-    })  
+    })
+      
   })
-module.exports = { loadFixtures } 
+
+  const loadleagueFixtures = asyncHandler(async (req:any,res:any) => {
+
+      const leagueId = req.body.leagueid;
+      const leaguefixtures = await Fixtures.find({"league.id": leagueId });
+      res.json({
+        "leaguefixtures":leaguefixtures
+      })
+      
+  })
+module.exports = { loadFixtures, loadleagueFixtures } 

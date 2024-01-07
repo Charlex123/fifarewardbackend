@@ -7,6 +7,7 @@ const cors = require('cors');
 const userRoutes = require("./routes/userRoutes");
 const leaguesRoutes = require('./routes/leaguesRoutes');
 const fixturesRoutes = require('./routes/fixturesRoutes');
+const countriesRoutes = require('./routes/countryRoutes');
 const predictionsRoutes = require('./routes/predictionsRoutes');
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 const OpenAI= require('openai');
@@ -47,6 +48,8 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use('/api/leagues',leaguesRoutes );
 app.use('/api/fixtures',fixturesRoutes );
+app.use('/api/leaguefixtures',fixturesRoutes );
+app.use('/api/countries',countriesRoutes );
 app.use('/api/predictions',predictionsRoutes );
 
 // Error Handling middlewares
