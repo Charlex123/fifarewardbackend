@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const { load4Bets, loadBets, JoinBet, getbetConditions, searchBetKeyWords, betListSearch, filterByBetAmount, filterByClosedBets, filterByOpenBets } = require("../controllers/betsController");
+const router = express.Router();
+router.get("/load4bets", load4Bets);
+router.post("/joinbet", JoinBet);
+router.post("/searchbetkeywords", searchBetKeyWords);
+router.post("/belistsearch", betListSearch);
+router.post("/filterbyopenbets", filterByOpenBets);
+router.post("/filterbyclosedbets", filterByClosedBets);
+router.post("/filterbybetamount", filterByBetAmount);
+router.post("/getbetconditions", getbetConditions);
+router.get("/loadbets/:page/:limit", loadBets);
+module.exports = router;
