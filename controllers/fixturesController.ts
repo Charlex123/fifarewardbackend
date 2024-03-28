@@ -111,6 +111,11 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
 
     const fixtures = await Fixtures.aggregate([
       {
+        $match: { 
+          'fixture.status.short': { $nin: ['FT', 'NS'] } // Exclude matches with status 'FT' (played) and 'NS' (not started)
+        }
+      },
+      {
           $group: {
               _id: { country: "$league.country", league: "$league.name",leagueid: "$league.id" },
               totalFixtures: { $sum: 1 }
@@ -202,7 +207,8 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
               _id: '$_id',
               leagueName: { $first: '$leagueName' },
               leagueCountry: { $first: '$leagueCountry' },
-              fixtures: { $push: '$fixtures' }
+              fixtures: { $push: '$fixtures' },
+              total: { $sum: 1 } // Count the total number of fixtures in the league
             }
           }
         ])
