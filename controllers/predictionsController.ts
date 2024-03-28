@@ -8,6 +8,8 @@ const generateUid = require("../utils/generateUid");
 const axios = require("axios") 
 const { v4: uuidv4 } = require("uuid");
 
+process.env.TZ = 'Europe/London';
+
 (async () => {
     // try {
     //   console.log('hopppppaweee')

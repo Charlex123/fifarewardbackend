@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 const Leagues = require("../models/leaguesModel");
 const axios = require('axios')
 
+process.env.TZ = 'Europe/London';
+
 // async function loadLeagues() {
 //     try {
 //         let totalleagueIdCount = 1072;

@@ -12,7 +12,8 @@ const OpenAI= require('openai');
 const openai = new OpenAI({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
   });
-  
+
+process.env.TZ = 'Europe/London';
 console.log('aichat ran');
 (async () => {
     try {

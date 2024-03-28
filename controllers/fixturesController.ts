@@ -7,6 +7,8 @@ const Leagues = require("../models/leaguesModel");
 const axios = require("axios") 
 const { v4: uuidv4 } = require("uuid");
 
+process.env.TZ = 'Europe/London';
+
 console.log('fixtures ran');
 (async () => {
     try {
@@ -137,6 +139,39 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
       
   })
 
+  const loadCupFixtures = asyncHandler(async (req:any,res:any) => {
+
+    const fixtures = await Fixtures.aggregate([
+      {
+        $match: { 
+          'league.country': 'World',
+          'fixture.status.short': { $nin: ['FT', 'NS'] } 
+        } // Filter documents where league.country is 'World'
+      },
+      {
+        $group: {
+          _id: '$league.id', // Group by league id
+          league: { $first: '$league' }, // Get the league details
+          count: { $sum: 1 } // Count the number of fixtures in each league
+        }
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the default _id field
+          league: 1, // Include league details
+          count: 1 // Include fixture count
+        }
+      },
+      {$sort: { _id: 1 }}
+    ])
+      
+    res.json({
+      "fixtures":fixtures,
+      "length":fixtures.length
+    })
+      
+  })
+
     const loadleagueFixtures = asyncHandler(async (req:any,res:any) => {
 
         const leagueId = req.body.leagueid;
@@ -144,27 +179,32 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
         const limit = req.body.limit;
             
         const leaguefixtures = await Fixtures.aggregate([
-            { $match: { 'league.id': leagueId } },
-            {
-                $group: {
-                _id: '$league.id',
-                leagueName: { $first: '$league.name' },
-                leagueCountry: { $first: '$league.country' },
-                fixtures: { $push: '$$ROOT' }
-                }
-            },
-            { $unwind: '$fixtures' },
-            { $sort: { 'fixtures.date': 1 } }, // Sorting by date for example
-            { $skip: (page - 1) * limit },
-            { $limit: limit },
-            {
-                $group: {
-                _id: '$_id',
-                leagueName: { $first: '$leagueName' },
-                leagueCountry: { $first: '$leagueCountry' },
-                fixtures: { $push: '$fixtures' }
-                }
+          {
+            $match: { 
+              'league.id': leagueId,
+              'fixture.status.short': { $nin: ['FT', 'NS'] } // Exclude matches with status 'FT' (played) and 'NS' (not started)
             }
+          },
+          {
+            $group: {
+              _id: '$league.id',
+              leagueName: { $first: '$league.name' },
+              leagueCountry: { $first: '$league.country' },
+              fixtures: { $push: '$$ROOT' }
+            }
+          },
+          { $unwind: '$fixtures' },
+          { $sort: { 'fixtures.fixture.date': 1 } }, // Sorting by date for example
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+          {
+            $group: {
+              _id: '$_id',
+              leagueName: { $first: '$leagueName' },
+              leagueCountry: { $first: '$leagueCountry' },
+              fixtures: { $push: '$fixtures' }
+            }
+          }
         ])
 
         const count = await Fixtures.find({"league.id":leagueId});
@@ -405,4 +445,4 @@ const searchFixtureByTeam = asyncHandler(async (req:any,res:any) => {
     })
 })
 
-module.exports = { loadFixtures, loadleagueFixtures, loadTodaysFixtures, loadFixturesByDate, loadMatchFixture, searchFixtureByMatchId, searchFixtureByTeam, searchFixturesbyKeyWords, searchFixturesResults, searchMatchbyKeyWords, loadMatchSearchResult } 
+module.exports = { loadCupFixtures, loadFixtures, loadleagueFixtures, loadTodaysFixtures, loadFixturesByDate, loadMatchFixture, searchFixtureByMatchId, searchFixtureByTeam, searchFixturesbyKeyWords, searchFixturesResults, searchMatchbyKeyWords, loadMatchSearchResult } 

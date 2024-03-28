@@ -10,6 +10,8 @@ const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 // const sgTransport = require("nodemailer-sendgrid-transport");
 
+process.env.TZ = 'Europe/London';
+
 // async..await is not allowed in global scope, must use a wrapper
   // create reusable transporter object using the default SMTP transport
   // const frontendurl = process.env.FRONTEND_URL;

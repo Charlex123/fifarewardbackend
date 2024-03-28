@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 const Bets = require("../models/betsModel");
 const User = require("../models/userModel");
 
+process.env.TZ = 'Europe/London';
+
 const load4Bets = asyncHandler(async (req:any,res:any) => {
     const loadbets = await Bets.find({betcreationstatus: 'openedbet'}).sort({createDate: 'desc'}).limit(4);
     res.json({

@@ -15,6 +15,7 @@ const predictionsRoutes = require('./routes/predictionsRoutes');
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 dotenv.config();
 
+process.env.TZ = 'Europe/London';
 connectDB();
 const app = express(); // main thing
 

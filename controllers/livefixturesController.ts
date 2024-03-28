@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const agenda = new Agenda({ db: { address: process.env.MONGO_URI } });
-
+process.env.TZ = 'Europe/London';
 
 // Define the job to run clearAndRepopulateData function
 agenda.define('clearAndRepopulateData', async () => {
