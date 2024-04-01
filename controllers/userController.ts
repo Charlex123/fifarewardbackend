@@ -369,7 +369,7 @@ const authUser = asyncHandler(async (req:any, res:any) => {
           username: user.username,
           userId: user.userId,
           email: user.email,
-          level: user.level,
+          badge: user.bagde,
           tpin: user.tpin,
           status: user.status,
           activated: user.activated,
@@ -398,9 +398,11 @@ const authUser = asyncHandler(async (req:any, res:any) => {
 const registerUser = asyncHandler(async (req:any, res:any) => {
   const { 
     username, 
+    sponsorId,
     email, 
     password,
-    level,
+    isinfluencer,
+    badge,
     tpin, 
     status,
     bscwalletaddress,
@@ -426,9 +428,11 @@ const registerUser = asyncHandler(async (req:any, res:any) => {
   const user = await User.create({
     username,
     userId: generateUid(),
+    sponsorId,
     email,
     password,
-    level,
+    isinfluencer,
+    badge,
     tpin,
     status,
     bscwalletaddress,
@@ -677,7 +681,7 @@ const activateAccount = asyncHandler(async (req:any,res:any) => {
 const updateWalletAddress = asyncHandler(async (req:any,res:any) => {
   const {walletaddress, username} = req.body;
   const findUser = await User.findOne({username});
-  
+  console.log("wa add",walletaddress)
   if (findUser) {
     
     findUser.verified = true;
