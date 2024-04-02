@@ -14,6 +14,7 @@ const Fixtures = require("../models/fixturesModel");
 const Leagues = require("../models/leaguesModel");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
+process.env.TZ = 'Europe/London';
 console.log('fixtures ran');
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -105,6 +106,11 @@ const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0
     // ]);
     const fixtures = yield Fixtures.aggregate([
         {
+            $match: {
+                'fixture.status.short': { $nin: ['FT', 'NS'] } // Exclude matches with status 'FT' (played) and 'NS' (not started)
+            }
+        },
+        {
             $group: {
                 _id: { country: "$league.country", league: "$league.name", leagueid: "$league.id" },
                 totalFixtures: { $sum: 1 }
@@ -130,12 +136,46 @@ const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0
         "length": fixtures.length
     });
 }));
+const loadCupFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const fixtures = yield Fixtures.aggregate([
+        {
+            $match: {
+                'league.country': 'World',
+                'fixture.status.short': { $nin: ['FT', 'NS'] }
+            } // Filter documents where league.country is 'World'
+        },
+        {
+            $group: {
+                _id: '$league.id', // Group by league id
+                league: { $first: '$league' }, // Get the league details
+                count: { $sum: 1 } // Count the number of fixtures in each league
+            }
+        },
+        {
+            $project: {
+                _id: 0, // Exclude the default _id field
+                league: 1, // Include league details
+                count: 1 // Include fixture count
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+    res.json({
+        "fixtures": fixtures,
+        "length": fixtures.length
+    });
+}));
 const loadleagueFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const leagueId = req.body.leagueid;
     const page = req.body.currentPage;
     const limit = req.body.limit;
     const leaguefixtures = yield Fixtures.aggregate([
-        { $match: { 'league.id': leagueId } },
+        {
+            $match: {
+                'league.id': leagueId,
+                'fixture.status.short': { $nin: ['FT', 'NS'] } // Exclude matches with status 'FT' (played) and 'NS' (not started)
+            }
+        },
         {
             $group: {
                 _id: '$league.id',
@@ -145,7 +185,7 @@ const loadleagueFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, 
             }
         },
         { $unwind: '$fixtures' },
-        { $sort: { 'fixtures.date': 1 } }, // Sorting by date for example
+        { $sort: { 'fixtures.fixture.date': 1 } }, // Sorting by date for example
         { $skip: (page - 1) * limit },
         { $limit: limit },
         {
@@ -153,7 +193,8 @@ const loadleagueFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, 
                 _id: '$_id',
                 leagueName: { $first: '$leagueName' },
                 leagueCountry: { $first: '$leagueCountry' },
-                fixtures: { $push: '$fixtures' }
+                fixtures: { $push: '$fixtures' },
+                total: { $sum: 1 } // Count the total number of fixtures in the league
             }
         }
     ]);
@@ -365,4 +406,4 @@ const searchFixtureByTeam = asyncHandler((req, res) => __awaiter(void 0, void 0,
         "match": leaguefixtures
     });
 }));
-module.exports = { loadFixtures, loadleagueFixtures, loadTodaysFixtures, loadFixturesByDate, loadMatchFixture, searchFixtureByMatchId, searchFixtureByTeam, searchFixturesbyKeyWords, searchFixturesResults, searchMatchbyKeyWords, loadMatchSearchResult };
+module.exports = { loadCupFixtures, loadFixtures, loadleagueFixtures, loadTodaysFixtures, loadFixturesByDate, loadMatchFixture, searchFixtureByMatchId, searchFixtureByTeam, searchFixturesbyKeyWords, searchFixturesResults, searchMatchbyKeyWords, loadMatchSearchResult };

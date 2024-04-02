@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    sponsorId: {
+        type: Number,
+        required: false
+    },
     email: {
         type: String,
         required: true,
@@ -34,7 +38,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    level: {
+    isinfluencer: {
+        type: Boolean
+    },
+    badge: {
         type: String,
         required: true
     },

@@ -145,7 +145,7 @@ process.env.TZ = 'Europe/London';
   const re_sendverificationMail = (_id:string,username:string,emailCode:number,email:string,res:any) => {
       
     const mailOptions = {
-      from: {name:'Fifa Reward',address:process.env.AUTH_EMAIL},
+      from: {"name":'Fifa Reward',address:process.env.AUTH_EMAIL},
       to: email,
       subject: "Confirm Your Email",
       html: `<html>
@@ -213,7 +213,7 @@ process.env.TZ = 'Europe/London';
   const verificationSuccess = (username:string,email:string, res:any) => {
       
     const mailOptions = {
-      from: {name:'Fifa Reward',address:process.env.AUTH_EMAIL},
+      from: {"name":'Fifa Reward',address:process.env.AUTH_EMAIL},
       to: email,
       subject: "Email Verificaton Success",
       html: `<html>
@@ -256,7 +256,7 @@ process.env.TZ = 'Europe/London';
           <div>
             <div>Hi <span>${username}</span>,</div><br>
             <div>You've successfully activated your account, you can now sign in.</div><br><br>
-            <a href="http://localhost:3002/signin">Confirm Email</a>
+            <a href="http://localhost:3000/signin">Confirm Email</a>
             <br>
             <div>
                 <p>
@@ -368,7 +368,9 @@ const authUser = asyncHandler(async (req:any, res:any) => {
           _id: user._id,
           username: user.username,
           userId: user.userId,
+          sponsorId: user.sponsorId,
           email: user.email,
+          isinfluencer: user.isinfluencer,
           badge: user.bagde,
           tpin: user.tpin,
           status: user.status,
@@ -409,6 +411,8 @@ const registerUser = asyncHandler(async (req:any, res:any) => {
     bscwalletprivatekey,
     pic 
   } = req.body;
+  
+  console.log("req body",req.body);
   const userExists = await User.findOne({ email });
   const usernameExists = await User.findOne({ username });
   
@@ -442,7 +446,7 @@ const registerUser = asyncHandler(async (req:any, res:any) => {
   });
 
   if (user) {
-
+    console.log("is influencer",isinfluencer);
     const sponsorId = req.body.sponsorId;
     console.log('sponsorId found',sponsorId)
     const refGeneration = "First";

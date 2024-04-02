@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const asyncHandler = require("express-async-handler");
 const Country = require("../models/countryModel");
 const axios = require("axios");
+process.env.TZ = 'Europe/London';
 console.log('country ran');
 // (async () => {
 //     try {

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const asyncHandler = require("express-async-handler");
 const Bets = require("../models/betsModel");
 const User = require("../models/userModel");
+process.env.TZ = 'Europe/London';
 const load4Bets = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const loadbets = yield Bets.find({ betcreationstatus: 'openedbet' }).sort({ createDate: 'desc' }).limit(4);
     res.json({

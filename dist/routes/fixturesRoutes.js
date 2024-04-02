@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const { loadFixtures, loadleagueFixtures, loadTodaysFixtures, loadFixturesByDate, loadMatchFixture, searchFixturesbyKeyWords, searchFixtureByMatchId, searchFixtureByTeam, searchFixturesResults, searchMatchbyKeyWords, loadMatchSearchResult } = require("../controllers/fixturesController");
+const { loadCupFixtures, loadFixtures, loadleagueFixtures, loadTodaysFixtures, loadFixturesByDate, loadMatchFixture, searchFixturesbyKeyWords, searchFixtureByMatchId, searchFixtureByTeam, searchFixturesResults, searchMatchbyKeyWords, loadMatchSearchResult } = require("../controllers/fixturesController");
 const router = express.Router();
 router.get("/loadfixtures", loadFixtures);
+router.get("/loadcupfixtures", loadCupFixtures);
 router.post("/loadleaguefixtures", loadleagueFixtures);
 router.post("/loadtodaysfixtures", loadTodaysFixtures);
 router.post("/loadfixturesbydate", loadFixturesByDate);

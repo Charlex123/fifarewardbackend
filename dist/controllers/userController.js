@@ -18,6 +18,8 @@ const generateRanNum = require("../utils/generateRanNum");
 const generateUid = require("../utils/generateUid");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
+// const sgTransport = require("nodemailer-sendgrid-transport");
+process.env.TZ = 'Europe/London';
 let transporter = nodemailer.createTransport({
     service: "gmail",
     host: "smtp.gmail.com",
@@ -110,7 +112,7 @@ const sendverificationMail = (_id, username, emailCode, email, res) => {
 };
 const re_sendverificationMail = (_id, username, emailCode, email, res) => {
     const mailOptions = {
-        from: { name: 'Fifa Reward', address: process.env.AUTH_EMAIL },
+        from: { "name": 'Fifa Reward', address: process.env.AUTH_EMAIL },
         to: email,
         subject: "Confirm Your Email",
         html: `<html>
@@ -173,7 +175,7 @@ const re_sendverificationMail = (_id, username, emailCode, email, res) => {
 };
 const verificationSuccess = (username, email, res) => {
     const mailOptions = {
-        from: { name: 'Fifa Reward', address: process.env.AUTH_EMAIL },
+        from: { "name": 'Fifa Reward', address: process.env.AUTH_EMAIL },
         to: email,
         subject: "Email Verificaton Success",
         html: `<html>
@@ -216,7 +218,7 @@ const verificationSuccess = (username, email, res) => {
           <div>
             <div>Hi <span>${username}</span>,</div><br>
             <div>You've successfully activated your account, you can now sign in.</div><br><br>
-            <a href="http://localhost:3002/signin">Confirm Email</a>
+            <a href="http://localhost:3000/signin">Confirm Email</a>
             <br>
             <div>
                 <p>
@@ -321,7 +323,7 @@ const authUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, fu
                 username: user.username,
                 userId: user.userId,
                 email: user.email,
-                level: user.level,
+                badge: user.bagde,
                 tpin: user.tpin,
                 status: user.status,
                 activated: user.activated,
@@ -348,7 +350,7 @@ const authUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, fu
 //@route           POST /api/users/
 //@access          Public
 const registerUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, email, password, level, tpin, status, bscwalletaddress, bscwalletprivatekey, pic } = req.body;
+    const { username, sponsorId, email, password, isinfluencer, badge, tpin, status, bscwalletaddress, bscwalletprivatekey, pic } = req.body;
     const userExists = yield User.findOne({ email });
     const usernameExists = yield User.findOne({ username });
     if (usernameExists) {
@@ -366,9 +368,11 @@ const registerUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0
     const user = yield User.create({
         username,
         userId: generateUid(),
+        sponsorId,
         email,
         password,
-        level,
+        isinfluencer,
+        badge,
         tpin,
         status,
         bscwalletaddress,
@@ -377,6 +381,7 @@ const registerUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0
         pic
     });
     if (user) {
+        console.log("is influencer", isinfluencer);
         const sponsorId = req.body.sponsorId;
         console.log('sponsorId found', sponsorId);
         const refGeneration = "First";
@@ -573,6 +578,7 @@ const activateAccount = asyncHandler((req, res) => __awaiter(void 0, void 0, voi
 const updateWalletAddress = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { walletaddress, username } = req.body;
     const findUser = yield User.findOne({ username });
+    console.log("wa add", walletaddress);
     if (findUser) {
         findUser.verified = true;
         const found_User = yield findUser.save();

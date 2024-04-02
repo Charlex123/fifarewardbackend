@@ -39,10 +39,10 @@ console.log('fixtures ran');
                           let fixtureid = fixturesresponse[i].fixture.id;
                           let fixdate = fixturesresponse[i].fixture.date;
                           let fix_date = fixdate.split("T");
-                          console.log('fixtureid',fixtureid);
+                          // console.log('fixtureid',fixtureid);
                           const fixturesExists = await Fixtures.findOne({"fixture.id":fixtureid});
                           if(fixturesExists) {
-                              console.log('Fixture Exists');
+                              // console.log('Fixture Exists');
                           }else {
                             console.log('Fixture created successfully__ ',fixtureid)
                               const Fixture = await Fixtures.create({
@@ -56,7 +56,7 @@ console.log('fixtures ran');
                                   
                               });
                               if(Fixture) {
-                                  console.log('Fixture created successfully',Fixture)
+                                  // console.log('Fixture created successfully',Fixture)
                               }
                           }
                           

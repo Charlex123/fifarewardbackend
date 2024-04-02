@@ -17,6 +17,7 @@ const generateRanNum = require("../utils/generateRanNum");
 const generateUid = require("../utils/generateUid");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
+process.env.TZ = 'Europe/London';
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // try {
     //   console.log('hopppppaweee')
