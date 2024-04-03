@@ -21,7 +21,7 @@ console.log('fixtures ran');
                 
                 var config = {
                     method: 'get',
-                    url: `https://v3.football.api-sports.io/fixtures?league=${leagueid}&season=2023`,
+                    url: `https://v3.football.api-sports.io/fixtures?league=${leagueid}&season=2023&timezone=Europe/london`,
                     headers: {
                       'x-rapidapi-key': process.env.API_SPORTS,
                       'x-rapidapi-host': 'v3.football.api-sports.io'
@@ -42,7 +42,7 @@ console.log('fixtures ran');
                           // console.log('fixtureid',fixtureid);
                           const fixturesExists = await Fixtures.findOne({"fixture.id":fixtureid});
                           if(fixturesExists) {
-                              // console.log('Fixture Exists');
+                              console.log('Fixture Exists');
                           }else {
                             console.log('Fixture created successfully__ ',fixtureid)
                               const Fixture = await Fixtures.create({
@@ -56,7 +56,7 @@ console.log('fixtures ran');
                                   
                               });
                               if(Fixture) {
-                                  // console.log('Fixture created successfully',Fixture)
+                                  console.log('Fixture created successfully',Fixture)
                               }
                           }
                           
