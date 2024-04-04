@@ -92,7 +92,7 @@ const sendverificationMail = (_id, username, emailCode, email, res) => {
             <div>
               <p>Hello <span> ${username},</span> you have signed up with FifaReward. </p>
               <p>Confirm your email with the link below to have access to our platform <br/><br><br>
-                <a href="http://localhost:9000/api/users/activateaccount/${username}/${emailCode}/${uuidv4()}">Confirm Email</a>
+                <a href="https://fifareward.onrender.com/api/users/activateaccount/${username}/${emailCode}/${uuidv4()}">Confirm Email</a>
               </p>
             </div>
           </body>
@@ -155,7 +155,7 @@ const re_sendverificationMail = (_id, username, emailCode, email, res) => {
             <div>
               <p>Hello <span> ${username},</span> you have signed up with FifaRewrd. </p>
               <p>Confirm your email with the link below to have access to our platform <br/><br><br>
-                <a href="http://localhost:9000/api/users/activateaccount/${username}/${emailCode}/${uuidv4()}">Confirm Email</a>
+                <a href="https://fifareward.onrender.com/api/users/activateaccount/${username}/${emailCode}/${uuidv4()}">Confirm Email</a>
               </p>
             </div>
           </body>
@@ -218,7 +218,7 @@ const verificationSuccess = (username, email, res) => {
           <div>
             <div>Hi <span>${username}</span>,</div><br>
             <div>You've successfully activated your account, you can now sign in.</div><br><br>
-            <a href="http://localhost:3000/signin">Confirm Email</a>
+            <a href="https://www.fifareward.io/signin">Confirm Email</a>
             <br>
             <div>
                 <p>
@@ -233,7 +233,7 @@ const verificationSuccess = (username, email, res) => {
     if (sender) {
         console.log("Message sent: %s", sender.messageId);
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-        res.redirect(`http://localhost:3002/accountactivatestatus/${username}`);
+        res.redirect(`https://www.fifareward.io/accountactivatestatus/${username}`);
         // Preview only available when sending through an Ethereal account
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(sender));
         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
@@ -322,7 +322,9 @@ const authUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, fu
                 _id: user._id,
                 username: user.username,
                 userId: user.userId,
+                sponsorId: user.sponsorId,
                 email: user.email,
+                isinfluencer: user.isinfluencer,
                 badge: user.bagde,
                 tpin: user.tpin,
                 status: user.status,
@@ -351,6 +353,7 @@ const authUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, fu
 //@access          Public
 const registerUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, sponsorId, email, password, isinfluencer, badge, tpin, status, bscwalletaddress, bscwalletprivatekey, pic } = req.body;
+    console.log("req body", req.body);
     const userExists = yield User.findOne({ email });
     const usernameExists = yield User.findOne({ username });
     if (usernameExists) {
