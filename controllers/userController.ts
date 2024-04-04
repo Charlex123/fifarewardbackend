@@ -272,7 +272,7 @@ process.env.TZ = 'Europe/London';
     if(sender){
       console.log("Message sent: %s", sender.messageId);
       // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-      res.redirect(`http://localhost:3002/accountactivatestatus/${username}`)
+      res.redirect(`https://www.fifareward.io/accountactivatestatus/${username}`)
       // Preview only available when sending through an Ethereal account
       console.log("Preview URL: %s", nodemailer.getTestMessageUrl(sender));
       // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
