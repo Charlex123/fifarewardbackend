@@ -579,15 +579,14 @@ const activateAccount = asyncHandler((req, res) => __awaiter(void 0, void 0, voi
     }
 }));
 const updateWalletAddress = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { walletaddress, username } = req.body;
+    const { addr, username } = req.body;
     const findUser = yield User.findOne({ username: { '$regex': username, $options: 'i' } });
-    console.log("wa add", walletaddress);
-    console.log("wa user", username);
     if (findUser) {
         findUser.verified = true;
+        findUser.walletaddress = addr;
         const found_User = yield findUser.save();
         if (found_User) {
-            const foundUser = yield User.updateOne({ username: username }, { $set: { walletaddress: walletaddress } });
+            const foundUser = yield User.updateOne({ username: username }, { $set: { walletaddress: addr } });
             if (foundUser) {
                 res.json({
                     message: "wallet update success",
