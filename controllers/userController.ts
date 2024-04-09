@@ -563,7 +563,7 @@ const getSponsor = asyncHandler(async (req:any,res:any) => {
 })
 
 const getWalletAddress = asyncHandler(async (req:any,res:any) => {
-  const username = req.body.username;
+  const username = req.body.username_;
   // get details of user sponsor
   const user_ = await User.findOne({ "username": username });
   if(user_) {
@@ -683,8 +683,8 @@ const activateAccount = asyncHandler(async (req:any,res:any) => {
 });
 
 const updateWalletAddress = asyncHandler(async (req:any,res:any) => {
-  const {walletaddress, username} = req.body;
-  const findUser = await User.findOne({username});
+  const {walletaddress, username_} = req.body;
+  const findUser = await User.findOne({username_});
   console.log("wa add",walletaddress)
   if (findUser) {
     
@@ -693,7 +693,7 @@ const updateWalletAddress = asyncHandler(async (req:any,res:any) => {
     const found_User = await findUser.save();
     if(found_User) {
       const foundUser = await User.updateOne(
-        {username:username}, { $set: {walletaddress: walletaddress}});
+        {username:username_}, { $set: {walletaddress: walletaddress}});
 
       if(foundUser) {
         res.json({
