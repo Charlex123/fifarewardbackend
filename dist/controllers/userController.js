@@ -582,6 +582,7 @@ const updateWalletAddress = asyncHandler((req, res) => __awaiter(void 0, void 0,
     const { walletaddress, username_ } = req.body;
     const findUser = yield User.findOne({ username_ });
     console.log("wa add", walletaddress);
+    console.log("wa user", username_);
     if (findUser) {
         findUser.verified = true;
         const found_User = yield findUser.save();
