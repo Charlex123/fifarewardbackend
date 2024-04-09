@@ -477,9 +477,9 @@ const getSponsor = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, 
     }
 }));
 const getWalletAddress = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = req.body.username_;
+    const username = req.body.username;
     // get details of user sponsor
-    const user_ = yield User.findOne({ "username": username });
+    const user_ = yield User.findOne({ "username": { '$regex': username, $options: 'i' } });
     if (user_) {
         const wa = user_.walletaddress;
         // get sponsor wallet address
@@ -579,15 +579,15 @@ const activateAccount = asyncHandler((req, res) => __awaiter(void 0, void 0, voi
     }
 }));
 const updateWalletAddress = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { walletaddress, username_ } = req.body;
-    const findUser = yield User.findOne({ username_ });
+    const { walletaddress, username } = req.body;
+    const findUser = yield User.findOne({ username: { '$regex': username, $options: 'i' } });
     console.log("wa add", walletaddress);
-    console.log("wa user", username_);
+    console.log("wa user", username);
     if (findUser) {
         findUser.verified = true;
         const found_User = yield findUser.save();
         if (found_User) {
-            const foundUser = yield User.updateOne({ username: username_ }, { $set: { walletaddress: walletaddress } });
+            const foundUser = yield User.updateOne({ username: username }, { $set: { walletaddress: walletaddress } });
             if (foundUser) {
                 res.json({
                     message: "wallet update success",

@@ -563,9 +563,9 @@ const getSponsor = asyncHandler(async (req:any,res:any) => {
 })
 
 const getWalletAddress = asyncHandler(async (req:any,res:any) => {
-  const username = req.body.username_;
+  const username = req.body.username;
   // get details of user sponsor
-  const user_ = await User.findOne({ "username": username });
+  const user_ = await User.findOne({ "username": {'$regex': username,$options:'i'} });
   if(user_) {
     const wa = user_.walletaddress;
     // get sponsor wallet address
@@ -683,10 +683,10 @@ const activateAccount = asyncHandler(async (req:any,res:any) => {
 });
 
 const updateWalletAddress = asyncHandler(async (req:any,res:any) => {
-  const {walletaddress, username_} = req.body;
-  const findUser = await User.findOne({username_});
+  const {walletaddress, username} = req.body;
+  const findUser = await User.findOne({username: {'$regex': username,$options:'i'}});
   console.log("wa add",walletaddress)
-  console.log("wa user",username_)
+  console.log("wa user",username)
   if (findUser) {
     
     findUser.verified = true;
@@ -694,7 +694,7 @@ const updateWalletAddress = asyncHandler(async (req:any,res:any) => {
     const found_User = await findUser.save();
     if(found_User) {
       const foundUser = await User.updateOne(
-        {username:username_}, { $set: {walletaddress: walletaddress}});
+        {username:username}, { $set: {walletaddress: walletaddress}});
 
       if(foundUser) {
         res.json({
