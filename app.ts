@@ -30,11 +30,11 @@ process.env.TZ = 'Europe/London';
 connectDB();
 const app = express(); // main thing
 const server = http.createServer(app);
-// console.log("srver",server)
+console.log("srver",server)
 const io = require("socket.io")(server, {
   rejectUnauthorized: false,
   cors: {
-    origin: "http://127.0.0.1:3000",
+    origin: "https://www.fifareward.io",
     methods: ["GET", "POST"]
   }
 })
