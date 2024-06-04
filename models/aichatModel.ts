@@ -1,3 +1,4 @@
+export {};
 var mongoose = require("mongoose");
 
 const AIChatschema = mongoose.Schema(
@@ -5,8 +6,8 @@ const AIChatschema = mongoose.Schema(
         chatid: {
             type: Number
         },
-        userId: {
-            type: Number
+        address: {
+            type: String
         },
         gtpreply: {
             type: String

@@ -1,3 +1,4 @@
+export {};
 var mongoose = require("mongoose");
 
 const Predictionschema = mongoose.Schema(

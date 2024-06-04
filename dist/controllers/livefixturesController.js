@@ -19,58 +19,58 @@ dotenv.config();
 const agenda = new Agenda({ db: { address: process.env.MONGO_URI } });
 process.env.TZ = 'Europe/London';
 // Define the job to run clearAndRepopulateData function
-agenda.define('clearAndRepopulateData', () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const config = {
-            method: 'get',
-            url: `https://v3.football.api-sports.io/fixtures?live=all`,
-            headers: {
-                'x-rapidapi-key': process.env.API_SPORTS,
-                'x-rapidapi-host': 'v3.football.api-sports.io'
-            }
-        };
-        const response = yield axios(config);
-        const fixturesresponse = response.data.response;
-        // Clear existing data
-        yield LiveFixtures.deleteMany({});
-        // Repopulate data
-        for (let i = 0; i < fixturesresponse.length; i++) {
-            const fid = `${Math.floor(100000000 + Math.random() * 900000000)}`;
-            const fixtureid = fixturesresponse[i].fixture.id;
-            let fixdate = fixturesresponse[i].fixture.date;
-            let fix_date = fixdate.split("T");
-            const fixturesExists = yield LiveFixtures.findOne({ "fixture.id": fixtureid });
-            if (fixturesExists) {
-                console.log('Fixture Exists', fixturesExists);
-            }
-            else {
-                const liveFixture = yield LiveFixtures.create({
-                    fid: fid,
-                    fixturedate: fix_date[0],
-                    fixture: fixturesresponse[i].fixture,
-                    league: fixturesresponse[i].league,
-                    teams: fixturesresponse[i].teams,
-                    goals: fixturesresponse[i].goals,
-                    score: fixturesresponse[i].score
-                });
-                if (liveFixture) {
-                    console.log('Live Fixture created successfully');
-                }
-            }
-            // Add a delay here to wait before fetching the next data
-            yield new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay time as needed
-        }
-        console.log('Data cleared and repopulated successfully.');
-    }
-    catch (error) {
-        console.error('Error while clearing and repopulating data:', error);
-    }
-}));
-// Start agenda and schedule the job to run every 30 minutes
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield agenda.start();
-    yield agenda.every('1 minute', 'clearAndRepopulateData');
-}))();
+// agenda.define('clearAndRepopulateData', async () => {
+//     try {
+//         const config = {
+//             method: 'get',
+//             url: `https://v3.football.api-sports.io/fixtures?live=all`,
+//             headers: {
+//                 'x-rapidapi-key': process.env.API_SPORTS,
+//                 'x-rapidapi-host': 'v3.football.api-sports.io'
+//             }
+//         };
+//         const response = await axios(config);
+//         const fixturesresponse = response.data.response;
+//         // Clear existing data
+//         await LiveFixtures.deleteMany({});
+//         // Repopulate data
+//         for (let i = 0; i < fixturesresponse.length; i++) {
+//             const fid = `${
+//                 Math.floor(100000000 + Math.random() * 900000000)
+//             }`;
+//             const fixtureid = fixturesresponse[i].fixture.id;
+//             let fixdate = fixturesresponse[i].fixture.date;
+//             let fix_date = fixdate.split("T");
+//             const fixturesExists = await LiveFixtures.findOne({ "fixture.id": fixtureid });
+//             if (fixturesExists) {
+//                 console.log('Fixture Exists', fixturesExists)
+//             } else {
+//                 const liveFixture = await LiveFixtures.create({
+//                     fid: fid,
+//                     fixturedate: fix_date[0],
+//                     fixture: fixturesresponse[i].fixture,
+//                     league: fixturesresponse[i].league,
+//                     teams: fixturesresponse[i].teams,
+//                     goals: fixturesresponse[i].goals,
+//                     score: fixturesresponse[i].score
+//                 });
+//                 if (liveFixture) {
+//                     console.log('Live Fixture created successfully')
+//                 }
+//             }
+//             // Add a delay here to wait before fetching the next data
+//             await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay time as needed
+//         }
+//         console.log('Data cleared and repopulated successfully.');
+//     } catch (error) {
+//         console.error('Error while clearing and repopulating data:', error);
+//     }
+// });
+// // Start agenda and schedule the job to run every 30 minutes
+// (async () => {
+//     await agenda.start();
+//     await agenda.every('1 minute', 'clearAndRepopulateData');
+// })();
 const loadliveFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const page = req.body.currentPage;
     const limit = req.body.limit;

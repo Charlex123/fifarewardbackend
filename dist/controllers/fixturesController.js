@@ -16,62 +16,62 @@ const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 process.env.TZ = 'Europe/London';
 console.log('fixtures ran');
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const leagues = yield Leagues.find({}, { 'league.id': 1, _id: 0 }).sort({ "fixture.id": -1 });
-        if (leagues) {
-            for (let l = 0; l < leagues.length; l++) {
-                const leagueid = leagues[l].league.id;
-                console.log("league ooo puytr", leagueid);
-                var config = {
-                    method: 'get',
-                    url: `https://v3.football.api-sports.io/fixtures?league=${leagueid}&season=2023&timezone=Europe/london`,
-                    headers: {
-                        'x-rapidapi-key': process.env.API_SPORTS,
-                        'x-rapidapi-host': 'v3.football.api-sports.io'
-                    }
-                };
-                const response = yield axios(config);
-                const fixturesresponse = response.data.response;
-                console.log('fixturesresponse.length', fixturesresponse.length);
-                if (fixturesresponse.length != 0) {
-                    for (let i = 0; i < fixturesresponse.length; i++) {
-                        const fid = `${Math.floor(100000000 + Math.random() * 900000000)}`;
-                        let fixtureid = fixturesresponse[i].fixture.id;
-                        let fixdate = fixturesresponse[i].fixture.date;
-                        let fix_date = fixdate.split("T");
-                        // console.log('fixtureid',fixtureid);
-                        const fixturesExists = yield Fixtures.findOne({ "fixture.id": fixtureid });
-                        if (fixturesExists) {
-                            console.log('Fixture Exists');
-                        }
-                        else {
-                            console.log('Fixture created successfully__ ', fixtureid);
-                            const Fixture = yield Fixtures.create({
-                                fid: fid,
-                                fixturedate: fix_date[0],
-                                fixture: fixturesresponse[i].fixture,
-                                league: fixturesresponse[i].league,
-                                teams: fixturesresponse[i].teams,
-                                goals: fixturesresponse[i].goals,
-                                score: fixturesresponse[i].score,
-                            });
-                            if (Fixture) {
-                                console.log('Fixture created successfully', Fixture);
-                            }
-                        }
-                    }
-                }
-                else {
-                }
-                yield new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay time as needed
-            }
-        }
-    }
-    catch (error) {
-        //   console.log(error)
-    }
-}))();
+// (async () => {
+//     try {
+//         const leagues = await Leagues.find({}, { 'league.id': 1, _id: 0 }).sort({"fixture.id": -1});
+//         if(leagues) {
+//             for(let l=0; l<leagues.length; l++) {
+//                 const leagueid = leagues[l].league.id;
+//                 console.log("league ooo puytr",leagueid);
+//                 var config = {
+//                     method: 'get',
+//                     url: `https://v3.football.api-sports.io/fixtures?league=${leagueid}&season=2023&timezone=Europe/london`,
+//                     headers: {
+//                       'x-rapidapi-key': process.env.API_SPORTS,
+//                       'x-rapidapi-host': 'v3.football.api-sports.io'
+//                     }
+//                   };
+//                   const response = await axios(config);
+//                   const fixturesresponse = response.data.response;
+//                   // console.log('fixturesresponse.length',fixturesresponse.length)
+//                   if(fixturesresponse.length != 0) {
+//                       for(let i=0;i<fixturesresponse.length;i++) {
+//                           const fid = `${
+//                               Math.floor(100000000 + Math.random() * 900000000)
+//                           }`;
+//                           let fixtureid = fixturesresponse[i].fixture.id;
+//                           let fixdate = fixturesresponse[i].fixture.date;
+//                           let fix_date = fixdate.split("T");
+//                           // console.log('fixtureid',fixtureid);
+//                           const fixturesExists = await Fixtures.findOne({"fixture.id":fixtureid});
+//                           if(fixturesExists) {
+//                               // console.log('Fixture Exists');
+//                           }else {
+//                             // console.log('Fixture created successfully__ ',fixtureid)
+//                               const Fixture = await Fixtures.create({
+//                                   fid: fid,
+//                                   fixturedate: fix_date[0],
+//                                   fixture: fixturesresponse[i].fixture,
+//                                   league: fixturesresponse[i].league,
+//                                   teams: fixturesresponse[i].teams,
+//                                   goals: fixturesresponse[i].goals,
+//                                   score: fixturesresponse[i].score,
+//                               });
+//                               if(Fixture) {
+//                                   // console.log('Fixture created successfully',Fixture)
+//                               }
+//                           }
+//                       }
+//                   }else {
+//                   }
+//                   await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay time as needed
+//             }
+//         }
+//         }catch(error) 
+//         {
+//     //   console.log(error)
+//     }
+// })();
 const loadFixtures = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const page = parseInt(req.query.page) || 1;
     // const pageSize = 200;
