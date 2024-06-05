@@ -1,6 +1,7 @@
 export {};
 const asyncHandler = require('express-async-handler');
 const Users = require('../models/usersModel');
+const generateUid = require("../utils/generateUid");
 
 const addUpdateUser= asyncHandler(async (req: any, res: any) => {
   const { 

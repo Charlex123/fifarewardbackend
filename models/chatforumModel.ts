@@ -6,6 +6,9 @@ const ChatForumMessageschema = mongoose.Schema(
         address: { 
             type: String 
         },
+        pic: {
+            type: String
+        },
         message: {
             type: String, required: true
         },
