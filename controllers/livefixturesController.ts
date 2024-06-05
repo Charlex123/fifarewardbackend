@@ -63,7 +63,7 @@ agenda.define('clearAndRepopulateData', async () => {
 // Start agenda and schedule the job to run every 30 minutes
 (async () => {
     await agenda.start();
-    await agenda.every('1 minute', 'clearAndRepopulateData');
+    await agenda.every('15 minutes', 'clearAndRepopulateData');
 })();
 
 const loadliveFixtures = asyncHandler(async (req:any,res:any) => {
