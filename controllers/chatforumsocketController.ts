@@ -14,6 +14,7 @@ const setupMessageHandlers = (io: any, socket: any) => {
     socket.on('sendMessage', async (message: any) => {
       try {
         // Check if the user exists
+        console.log("message in o",message)
         const userExists = await User.findOne({address:message.user});
         if (!userExists) {
           return socket.emit('error', 'User not found');
@@ -32,6 +33,7 @@ const setupMessageHandlers = (io: any, socket: any) => {
           // Save the message to the database
           await messageDoc.save();
           // Broadcast the message to all connected clients
+          console.log("mesage out o",messageDoc)
           io.emit('message', messageDoc);
         }
         
