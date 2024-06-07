@@ -34,8 +34,9 @@ const server = http.createServer(app);
 const io = require("socket.io")(server, {
   rejectUnauthorized: false,
   cors: {
-    origin: "https://fifareward.io",
-    methods: ["GET", "POST"]
+    origin: process.env.NODE_ENV === "production" ? process.env.PRODUCTION_FRONTEND_URL : process.env.FRONTEND_URL,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 })
 
