@@ -34,7 +34,8 @@ const uploadPlayerImage = asyncHandler((req, res) => {
             return res.json({ error: err.message });
         }
         if (req.file) {
-            const baseUrl = `${req.protocol}://${req.get('host')}`;
+            const protocol = req.protocol === 'http' ? 'https' : req.protocol;
+            const baseUrl = `${protocol}://${req.get('host')}`;
             const filePath = `/playerimages/${req.file.filename}`;
             const fullUrl = `${baseUrl}${filePath}`;
             res.json({ fullUrl });

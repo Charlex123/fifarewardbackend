@@ -56,13 +56,13 @@ if (process.env.NODE_ENV === "production") {
 // --------------------------deployment------------------------------
 // const predictionsRoute = require('./routes/predictionsRoutes')
 app.use(cors());
-app.use('/profile-images', express.static('profile-images'));
-app.use('/playerimages', express.static('playerimages'));
-app.use('/chatforumuploads', express.static('chatforumuploads'));
+// app.use('/profile-images', express.static('profile-images'));
+// app.use('/playerimages', express.static('playerimages'));
+// app.use('/chatforumuploads', express.static('chatforumuploads'));
 
 app.use("/api/chatforum", chatforumRoutes);
 app.use("/api/players", playerRoutes);
-app.use("/", uploadsRoutes);
+app.use("/api/", uploadsRoutes);
 app.use('/api/leagues',leaguesRoutes );
 app.use('/api/guessherohint',guessherohintRoutes );
 // app.use('/api/bets',betsRoutes );

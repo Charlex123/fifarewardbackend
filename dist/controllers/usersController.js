@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const asyncHandler = require('express-async-handler');
 const Users = require('../models/usersModel');
+const generateUid = require("../utils/generateUid");
 const addUpdateUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, address, sponsoraddress, issponsorinfluencer, isinfluencer, badge, pic } = req.body;
     if (address == sponsoraddress) {

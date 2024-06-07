@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require('mongoose');
 const Message = require('../models/chatforumModel');
 const User = require('../models/usersModel');
+const generateUid = require("../utils/generateUid");
 /**
  * Setup message handlers for Socket.IO.
  *
@@ -22,23 +23,28 @@ const setupMessageHandlers = (io, socket) => {
     socket.on('sendMessage', (message) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             // Check if the user exists
-            const userExists = yield User.findById(message.address);
+            console.log("message in o", message);
+            const userExists = yield User.findOne({ address: message.user });
             if (!userExists) {
                 return socket.emit('error', 'User not found');
             }
-            // Create a new message
-            const messageDoc = new Message({
-                chatid: message.chatid,
-                address: message.address,
-                message: message.message,
-                likes: message.likes,
-                dislike: message.dislike,
-                timestamp: new Date(),
-            });
-            // Save the message to the database
-            yield messageDoc.save();
-            // Broadcast the message to all connected clients
-            io.emit('message', messageDoc);
+            else {
+                // Create a new message
+                const messageDoc = new Message({
+                    chatid: generateUid(),
+                    address: message.user,
+                    pic: message.pic,
+                    message: message.content,
+                    likes: message.likes,
+                    dislike: message.dislike,
+                    timestamp: new Date(),
+                });
+                // Save the message to the database
+                yield messageDoc.save();
+                // Broadcast the message to all connected clients
+                console.log("mesage out o", messageDoc);
+                io.emit('message', messageDoc);
+            }
         }
         catch (error) {
             console.error('Error saving message:', error);
@@ -47,7 +53,8 @@ const setupMessageHandlers = (io, socket) => {
     }));
     socket.on('getMessages', () => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const messages = yield Message.find().populate('address', 'profilePic');
+            // const messages = await Message.find().populate('address', 'pic');
+            const messages = yield Message.find();
             socket.emit('messages', messages);
         }
         catch (error) {

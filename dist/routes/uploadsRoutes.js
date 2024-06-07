@@ -1,11 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
-const { forumuploadFile } = require('../controllers/chatforumuploadsController');
-const { uploadPlayerImage } = require('../controllers/playerimageuploadController');
-const { uploadProfileImage } = require('../controllers/profilepicuploadController');
+const { upload, uploadFile } = require('../controllers/uploadController');
 const router = express.Router();
-router.post('/uploadplayerimage', uploadPlayerImage);
-router.post('/uploadforumfile', forumuploadFile);
-router.post('/uploadprofileimage', uploadProfileImage);
+router.post('/upload', upload.single('file'), uploadFile);
 module.exports = router;

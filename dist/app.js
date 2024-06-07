@@ -30,11 +30,10 @@ process.env.TZ = 'Europe/London';
 connectDB();
 const app = express(); // main thing
 const server = http_1.default.createServer(app);
-// console.log("srver",server)
 const io = require("socket.io")(server, {
     rejectUnauthorized: false,
     cors: {
-        origin: "http://127.0.0.1:3000",
+        origin: "https://fifareward.io",
         methods: ["GET", "POST"]
     }
 });
@@ -52,12 +51,12 @@ else {
 // --------------------------deployment------------------------------
 // const predictionsRoute = require('./routes/predictionsRoutes')
 app.use(cors());
-app.use('/profile-images', express.static('profile-images'));
-app.use('/playerimages', express.static('playerimages'));
-app.use('/chatforumuploads', express.static('chatforumuploads'));
+// app.use('/profile-images', express.static('profile-images'));
+// app.use('/playerimages', express.static('playerimages'));
+// app.use('/chatforumuploads', express.static('chatforumuploads'));
 app.use("/api/chatforum", chatforumRoutes);
 app.use("/api/players", playerRoutes);
-app.use("/", uploadsRoutes);
+app.use("/api/", uploadsRoutes);
 app.use('/api/leagues', leaguesRoutes);
 app.use('/api/guessherohint', guessherohintRoutes);
 // app.use('/api/bets',betsRoutes );
@@ -82,4 +81,4 @@ io.on('connection', (socket) => {
     });
 });
 const PORT = process.env.PORT || 9000;
-app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}..`));
+server.listen(PORT);
