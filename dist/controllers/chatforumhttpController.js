@@ -14,7 +14,7 @@ const Message = require('../models/chatforumModel');
 const User = require('../models/usersModel');
 const generateUid = require("../utils/generateUid");
 const sendMessage = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { content, pic, user, timestamp } = req.body;
+    const { content, pic, user } = req.body;
     console.log(" req header ", req.body);
     try {
         // Check if the user exists
@@ -29,7 +29,7 @@ const sendMessage = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0,
                 address: user,
                 pic: pic,
                 message: content,
-                timestamp: timestamp,
+                timestamp: new Date(),
             });
             // Save the message to the database
             yield messageDoc.save();

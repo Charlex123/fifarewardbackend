@@ -5,7 +5,7 @@ const User = require('../models/usersModel');
 const generateUid = require("../utils/generateUid");
 
 const sendMessage = asyncHandler(async (req: any, res: any) => {
-  const { content, pic, user, timestamp } = req.body;
+  const { content, pic, user } = req.body;
   console.log(" req header ",req.body)
   try {
     // Check if the user exists
@@ -19,7 +19,7 @@ const sendMessage = asyncHandler(async (req: any, res: any) => {
         address: user,
         pic: pic,
         message: content,
-        timestamp: timestamp,
+        timestamp: new Date(),
       });
 
       // Save the message to the database
