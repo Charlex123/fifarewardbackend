@@ -7,6 +7,7 @@ const addUpdateUser= asyncHandler(async (req: any, res: any) => {
   const { 
     username,
     address,
+    isConnected,
     sponsoraddress,
     issponsorinfluencer,
     isinfluencer,
@@ -20,12 +21,13 @@ const addUpdateUser= asyncHandler(async (req: any, res: any) => {
   
   if (!user_) {
     
-    const user = new Users({ username: username, address: address, sponsoraddress: sponsoraddress,isinfluencer: isinfluencer, issponsorinfluencer: issponsorinfluencer, badge: badge, pic: pic });
+    const user = new Users({ username: username, address: address,isConnected: isConnected, sponsoraddress: sponsoraddress,isinfluencer: isinfluencer, issponsorinfluencer: issponsorinfluencer, badge: badge, pic: pic });
     await user.save();
     res.status(200).json({ message: 'action success',user: user });
   }else {
     user_.username = username;
     user_.address = address;
+    user_.isConnected = isConnected;
     user_.sponsoraddress = sponsoraddress;
     user_.isinfluencer = isinfluencer;
     user_.issponsorinflencer = issponsorinfluencer;
