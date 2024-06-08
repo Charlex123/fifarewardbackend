@@ -105,6 +105,6 @@ io.on('connection', (socket: any) => {
 const PORT = process.env.PORT || 9000;
 // const HOST = '0.0.0.0'; // Use 0.0.0.0 to bind to all network interfaces
 
-server.listen(PORT, () => {
+server.listen(PORT,"0.0.0.0", () => {
   console.log(`Server running on http://:${PORT}`);
 });
