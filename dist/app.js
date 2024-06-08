@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const http_1 = __importDefault(require("http"));
+const https = require('https');
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require('cors');
@@ -29,13 +26,12 @@ dotenv.config();
 process.env.TZ = 'Europe/London';
 connectDB();
 const app = express(); // main thing
-const server = http_1.default.createServer(app);
+const server = https.createServer(app);
 const io = require("socket.io")(server, {
     rejectUnauthorized: false,
     cors: {
-        origin: process.env.NODE_ENV === "production" ? process.env.PRODUCTION_FRONTEND_URL : process.env.FRONTEND_URL,
-        methods: ["GET", "POST"],
-        credentials: true
+        origin: "https://fifareward.io",
+        methods: ["GET", "POST"]
     }
 });
 app.use(express.json()); // to accept json data
@@ -82,4 +78,4 @@ io.on('connection', (socket) => {
     });
 });
 const PORT = process.env.PORT || 9000;
-server.listen(PORT);
+app.listen(PORT);
