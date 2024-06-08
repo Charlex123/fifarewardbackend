@@ -21,6 +21,18 @@ const countriesRoutes = require('./routes/countryRoutes');
 const aichatRoutes = require('./routes/aichatRoutes');
 const predictionsRoutes = require('./routes/predictionsRoutes');
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
+const dns = require('node:dns');
+
+const frontendip = dns.lookup('fifareward.io', (err: any, address: any, family: any) => {
+  console.log('address: %j family: IPv%s', address, family);
+  return address;
+});
+
+dns.lookup('https://www.fifareward.io', (err: any, address: any, family: any) => {
+  console.log(' www address: %j family: IPv%s', address, family);
+  return address;
+});
+console.log("front en dip",frontendip)
 
 const { setupMessageHandlers } = require('./controllers/chatforumsocketController');
 
@@ -35,7 +47,7 @@ const httpsServer = https.createServer(app);
 
 const io = new Server(httpsServer, {
   cors: {
-    origin: process.env.NODE_ENV === "production" ? process.env.PRODUCTION_FRONTEND_URL : process.env.FRONTEND_URL,
+    origin: "108.157.78.120",
     methods: ["GET", "POST"],
     credentials: true
   }
