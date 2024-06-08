@@ -1,7 +1,8 @@
 export {};
 const express = require("express");
-import http from 'http';
-import { Server } from 'socket.io';
+const http = require('http');
+const https = require('https');
+const { Server } = require('socket.io');
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require('cors');
@@ -21,7 +22,6 @@ const aichatRoutes = require('./routes/aichatRoutes');
 const predictionsRoutes = require('./routes/predictionsRoutes');
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 
-const crypto = require('crypto');
 const { setupMessageHandlers } = require('./controllers/chatforumsocketController');
 
 dotenv.config();
@@ -30,15 +30,25 @@ process.env.TZ = 'Europe/London';
 connectDB();
 const app = express(); // main thing
 const server = http.createServer(app);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(app);
 
-const io = require("socket.io")(server, {
-  rejectUnauthorized: false,
+const io = new Server(httpsServer, {
   cors: {
     origin: process.env.NODE_ENV === "production" ? process.env.PRODUCTION_FRONTEND_URL : process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
     credentials: true
   }
-})
+});
+
+// const io = require("socket.io")(server, {
+//   rejectUnauthorized: false,
+//   cors: {
+//     origin: process.env.NODE_ENV === "production" ? process.env.PRODUCTION_FRONTEND_URL : process.env.FRONTEND_URL,
+//     methods: ["GET", "POST"],
+//     credentials: true
+//   }
+// })
 
 app.use(express.json()); // to accept json data
 
@@ -93,10 +103,8 @@ io.on('connection', (socket: any) => {
 });
 
 const PORT = process.env.PORT || 9000;
+// const HOST = '0.0.0.0'; // Use 0.0.0.0 to bind to all network interfaces
 
-server.listen(
-  PORT,
-  // console.log(
-  //   `Server running in ${process.env.NODE_ENV} mode on port ${PORT}..`
-  // )
-);
+server.listen(PORT, () => {
+  console.log(`Server running on http://:${PORT}`);
+});
