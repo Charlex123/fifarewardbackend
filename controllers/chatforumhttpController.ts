@@ -5,18 +5,18 @@ const User = require('../models/usersModel');
 const generateUid = require("../utils/generateUid");
 
 const sendMessage = asyncHandler(async (req: any, res: any) => {
-  const { content, pic, user } = req.body;
+  const { content, pic, address } = req.body;
   console.log(" req header ",req.body)
   try {
     // Check if the user exists
-    const userExists = await User.findOne({address:user});
+    const userExists = await User.findOne({address:address});
     if (!userExists) {
       return res.json({error: 'User not found'});
     }else {
       // Create a new message
       const messageDoc = new Message({
         chatid: generateUid(),
-        address: user,
+        address: address,
         pic: pic,
         message: content,
         timestamp: new Date(),
