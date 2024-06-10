@@ -11,18 +11,18 @@ process.env.TZ = 'Europe/London';
 
 
 const StartMining = asyncHandler(async (req:any,res:any) => {
-    const {connectedaddress, amountmined, miningrate} = req.body;
+    const {address, amountmined, miningrate} = req.body;
     const miningstatus = "Active";
     const startsmining = await Mining.create({
         miningId: generateUid(),
-        connectedaddress,
+        address,
         miningrate,
         miningstatus,
         amountmined
       });
     if(startsmining) {
-        const minedetails = await Mining.findOne({address: connectedaddress});
-        if(minedetails) {
+        const minedetails = await Mining.findOne({address: address});
+        if(minedetails !== null) {
             res.status(201).json({
                 _id: minedetails._id,
                 miningId: minedetails.miningId,
