@@ -72,16 +72,16 @@ const StartMining = asyncHandler(async (req:any,res:any) => {
   })
 
   const StopMining = asyncHandler(async (req:any,res:any) => {
-    const {userId} = req.body;
-    const findMining = await Mining.findOne({userId: userId});
+    const {address} = req.body;
+    const findMining = await Mining.findOne({address: address});
   if (findMining) {
     findMining.verified = true;
     findMining.miningstatus = "Stopped";
     const found_Mining = await findMining.save();
     if(found_Mining) {
       const foundMining = await Mining.updateOne(
-        {userId:userId}, { $set: {"miningstatus": "Stopped"}});
-        const foundMining_ = await Mining.findOne({userId: userId});
+        {address:address}, { $set: {"miningstatus": "Stopped"}});
+        const foundMining_ = await Mining.findOne({address: address});
       if(foundMining_) {
         res.status(201).json({
             _id: foundMining_._id,
