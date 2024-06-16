@@ -37,7 +37,6 @@ process.env.TZ = 'Europe/London';
         const getcountdowntime = await CountDown.findOne();
         
 
-        console.log("ger",getcountdowntime)
         if(getcountdowntime) {
 
             // Get the current time in seconds
