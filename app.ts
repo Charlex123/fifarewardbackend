@@ -8,6 +8,7 @@ const uploadsRoutes = require("./routes/uploadsRoutes");
 const leaguesRoutes = require('./routes/leaguesRoutes');
 const chatforumRoutes = require('./routes/chatforumRoutes');
 const playerRoutes = require('./routes/playerRoutes');
+const countdownRoutes = require('./routes/countdownRoutes');
 const guessherohintRoutes = require('./routes/guessherohintRoutes');
 const guessfootballheroRoutes = require('./routes/guessfootballheroRoutes');
 // const betsRoutes = require('./routes/betsRoutes');
@@ -61,6 +62,7 @@ app.use(cors());
 
 app.use("/api/chatforum", chatforumRoutes);
 app.use("/api/players", playerRoutes);
+app.use("/api/countdown", countdownRoutes);
 app.use("/api/", uploadsRoutes);
 app.use('/api/leagues',leaguesRoutes );
 app.use('/api/guessherohint',guessherohintRoutes );

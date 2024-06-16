@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require("uuid");
 
 process.env.TZ = 'Europe/London';
 
-console.log('fixtures ran');
+// console.log('fixtures ran');
 // (async () => {
 //     try {
 //         const leagues = await Leagues.find({}, { 'league.id': 1, _id: 0 }).sort({"fixture.id": -1});
