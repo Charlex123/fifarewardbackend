@@ -36,8 +36,7 @@ process.env.TZ = 'Europe/London';
         
         const getcountdowntime = await CountDown.findOne();
         
-
-        if(getcountdowntime) {
+          if(getcountdowntime) {
 
             // Get the current time in seconds
             const currentTimeInSeconds = Math.floor(Date.now() / 1000);
