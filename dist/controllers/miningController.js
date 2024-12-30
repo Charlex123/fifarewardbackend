@@ -29,7 +29,7 @@ const StartMining = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0,
     });
     if (startsmining) {
         const minedetails = yield Mining.findOne({ address: address });
-        if (minedetails) {
+        if (minedetails !== null) {
             res.status(201).json({
                 _id: minedetails._id,
                 miningId: minedetails.miningId,
@@ -79,15 +79,15 @@ const UpdateMiningAmount = asyncHandler((req, res) => __awaiter(void 0, void 0, 
     }
 }));
 const StopMining = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.body;
-    const findMining = yield Mining.findOne({ userId: userId });
+    const { address } = req.body;
+    const findMining = yield Mining.findOne({ address: address });
     if (findMining) {
         findMining.verified = true;
         findMining.miningstatus = "Stopped";
         const found_Mining = yield findMining.save();
         if (found_Mining) {
-            const foundMining = yield Mining.updateOne({ userId: userId }, { $set: { "miningstatus": "Stopped" } });
-            const foundMining_ = yield Mining.findOne({ userId: userId });
+            const foundMining = yield Mining.updateOne({ address: address }, { $set: { "miningstatus": "Stopped" } });
+            const foundMining_ = yield Mining.findOne({ address: address });
             if (foundMining_) {
                 res.status(201).json({
                     _id: foundMining_._id,

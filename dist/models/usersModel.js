@@ -9,6 +9,9 @@ const usersSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    isConnected: {
+        type: Boolean
+    },
     encryptedreflinkid: {
         type: String
     },

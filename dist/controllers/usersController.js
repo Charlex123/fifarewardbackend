@@ -13,19 +13,20 @@ const asyncHandler = require('express-async-handler');
 const Users = require('../models/usersModel');
 const generateUid = require("../utils/generateUid");
 const addUpdateUser = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, address, sponsoraddress, issponsorinfluencer, isinfluencer, badge, pic } = req.body;
+    const { username, address, isConnected, sponsoraddress, issponsorinfluencer, isinfluencer, badge, pic } = req.body;
     if (address == sponsoraddress) {
         return res.json({ message: "You can't refer yourself" });
     }
     const user_ = yield Users.findOne({ address: address });
     if (!user_) {
-        const user = new Users({ username: username, address: address, sponsoraddress: sponsoraddress, isinfluencer: isinfluencer, issponsorinfluencer: issponsorinfluencer, badge: badge, pic: pic });
+        const user = new Users({ username: username, address: address, isConnected: isConnected, sponsoraddress: sponsoraddress, isinfluencer: isinfluencer, issponsorinfluencer: issponsorinfluencer, badge: badge, pic: pic });
         yield user.save();
         res.status(200).json({ message: 'action success', user: user });
     }
     else {
         user_.username = username;
         user_.address = address;
+        user_.isConnected = isConnected;
         user_.sponsoraddress = sponsoraddress;
         user_.isinfluencer = isinfluencer;
         user_.issponsorinflencer = issponsorinfluencer;

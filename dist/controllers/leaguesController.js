@@ -12,50 +12,64 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const asyncHandler = require("express-async-handler");
 const Leagues = require("../models/leaguesModel");
 const axios = require('axios');
+const Agenda = require("agenda");
+const dotenv = require("dotenv");
+dotenv.config();
 process.env.TZ = 'Europe/London';
-// async function loadLeagues() {
+const agenda = new Agenda({ db: { address: process.env.MONGO_URI, collection: 'agendaJobs' } });
+process.env.TZ = 'Europe/London';
+agenda.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Agenda connected to MongoDB and is ready');
+    // Start Agenda
+    yield agenda.start();
+    // Schedule the job to run every 10 minutes
+    yield agenda.every('1440 minutes', 'LoadLeagues');
+})).on('error', (error) => {
+    console.error('Agenda failed to connect:', error);
+});
+// agenda.define('LoadLeagues', async () => {
 //     try {
-//         let totalleagueIdCount = 1072;
-//         for (let l = 0; l < totalleagueIdCount; l++) {
-//             const config = {
-//                 method: 'get',
-//                 url: `https://v3.football.api-sports.io/leagues?id=${l}`,
-//                 headers: {
-//                     'x-rapidapi-key': process.env.API_SPORTS,
-//                     'x-rapidapi-host': 'v3.football.api-sports.io'
-//                 }
-//             };
-//             const response = await axios(config);
-//             const leaguesresponse = response.data.response;
-//             console.log('leagues', leaguesresponse);
-//             for (let i = 0; i < leaguesresponse.length; i++) {
-//                 const lid = `${
-//                     Math.floor(100000000 + Math.random() * 900000000)
-//                 }`;
-//                 const leagueid = leaguesresponse[i].league.id;
-//                 const leagueExists = await Leagues.findOne({ "league.id": leagueid });
-//                 if (leagueExists) {
-//                     console.log('league Exists');
-//                 } else {
-//                     const league = await Leagues.create({
-//                         lid: lid,
-//                         league: leaguesresponse[i].league,
-//                         country: leaguesresponse[i].country,
-//                         seasons: leaguesresponse[i].seasons
-//                     });
-//                     if (league) {
-//                         console.log("league created successfully", league);
-//                     }
+//       // await Leagues.deleteMany({});
+//         const config = {
+//             method: 'get',
+//             url: `https://v3.football.api-sports.io/leagues?current=true&season=2024`,
+//             headers: {
+//                 'x-rapidapi-key': process.env.API_SPORTS,
+//                 'x-rapidapi-host': 'v3.football.api-sports.io'
+//             }
+//         };
+//         const response = await axios(config);
+//         const leaguesresponse = response.data.response;
+//         for (let i = 0; i < leaguesresponse.length; i++) {
+//             const lid = `${
+//                 Math.floor(100000000 + Math.random() * 900000000)
+//             }`;
+//             const leagueid = leaguesresponse[i].league.id;
+//             const leagueExists = await Leagues.findOne({ "league.id": leagueid });
+//             if (leagueExists) {
+//                 // console.log('league Exists');
+//             } else {
+//                 const league = await Leagues.create({
+//                     lid: lid,
+//                     league: leaguesresponse[i].league,
+//                     country: leaguesresponse[i].country,
+//                     seasons: leaguesresponse[i].seasons
+//                 });
+//                 if (league) {
+//                     // console.log("league created successfully", league);
 //                 }
 //             }
-//             // Add a delay here to wait before fetching the next data
-//             await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay time as needed
 //         }
+//         // Add a delay here to wait before fetching the next data
+//         await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay time as needed
 //     } catch (error) {
 //         console.log(error);
 //     }
-// }
-// loadLeagues();
+// })
+// // Start Agenda
+// (async () => {
+//   await agenda.start();
+// })();
 const getLeagues = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const leagues = yield Leagues.find();
     res.json({

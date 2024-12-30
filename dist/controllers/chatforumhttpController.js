@@ -14,11 +14,11 @@ const Message = require('../models/chatforumModel');
 const User = require('../models/usersModel');
 const generateUid = require("../utils/generateUid");
 const sendMessage = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { content, pic, address } = req.body;
+    const { content, pic, user } = req.body;
     console.log(" req header ", req.body);
     try {
         // Check if the user exists
-        const userExists = yield User.findOne({ address: address });
+        const userExists = yield User.findOne({ address: user });
         if (!userExists) {
             return res.json({ error: 'User not found' });
         }
@@ -26,7 +26,7 @@ const sendMessage = asyncHandler((req, res) => __awaiter(void 0, void 0, void 0,
             // Create a new message
             const messageDoc = new Message({
                 chatid: generateUid(),
-                address: address,
+                address: user,
                 pic: pic,
                 message: content,
                 timestamp: new Date(),

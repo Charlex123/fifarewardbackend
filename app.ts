@@ -8,6 +8,7 @@ const uploadsRoutes = require("./routes/uploadsRoutes");
 const leaguesRoutes = require('./routes/leaguesRoutes');
 const chatforumRoutes = require('./routes/chatforumRoutes');
 const playerRoutes = require('./routes/playerRoutes');
+const proceessbetspaymentRoutes = require('./routes/processbetspaymentsRoutes');
 const countdownRoutes = require('./routes/countdownRoutes');
 const guessherohintRoutes = require('./routes/guessherohintRoutes');
 const guessfootballheroRoutes = require('./routes/guessfootballheroRoutes');
@@ -65,6 +66,7 @@ app.use("/api/players", playerRoutes);
 app.use("/api/countdown", countdownRoutes);
 app.use("/api/", uploadsRoutes);
 app.use('/api/leagues',leaguesRoutes );
+app.use('/api/betpayment',proceessbetspaymentRoutes );
 app.use('/api/guessherohint',guessherohintRoutes );
 // app.use('/api/bets',betsRoutes );
 app.use('/api/users',usersRoutes );
@@ -75,6 +77,7 @@ app.use('/api/guessfootballhero',guessfootballheroRoutes );
 app.use('/api/countries',countriesRoutes );
 app.use('/api/predictions',predictionsRoutes );
 app.use('/api/aichats',aichatRoutes );
+
 
 // Error Handling middlewares
 app.use(notFound);
