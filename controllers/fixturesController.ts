@@ -25,78 +25,79 @@ process.env.TZ = 'Europe/London';
 // });
 
 // console.log('fixtures ran');
-const LoadFixtureData = async () => {
-  console.log('agenda fixtures ran');
-    try {
-        // Clear existing data
-        // await Fixtures.deleteMany({});
-        // console.log("Existing fixtures cleared.");
 
-      const config = {
-        headers: {
-          'x-rapidapi-key': process.env.API_SPORTS,
-          'x-rapidapi-host': 'v3.football.api-sports.io'
-        }
-      };
-      // console.log('agenda ooh 2 fixtures ran');
-      const response = await axios.get(`https://v3.football.api-sports.io/leagues?current=true&season=2024`,config);
-      // console.log("fix ureee resp",response)
-      const leagues = response.data.response;
-      // console.log("fix ureee resp legue",leagues)
-        if(leagues) {
+// const LoadFixtureData = async () => {
+//   console.log('agenda fixtures ran');
+//     try {
+//         // Clear existing data
+//         // await Fixtures.deleteMany({});
+//         // console.log("Existing fixtures cleared.");
+
+//       const config = {
+//         headers: {
+//           'x-rapidapi-key': process.env.API_SPORTS,
+//           'x-rapidapi-host': 'v3.football.api-sports.io'
+//         }
+//       };
+//       // console.log('agenda ooh 2 fixtures ran');
+//       const response = await axios.get(`https://v3.football.api-sports.io/leagues?current=true&season=2024`,config);
+//       // console.log("fix ureee resp",response)
+//       const leagues = response.data.response;
+//       // console.log("fix ureee resp legue",leagues)
+//         if(leagues) {
           
-            for(let l=0; l<leagues.length; l++) {
-                const leagueid = leagues[l].league.id;
-                // console.log("league ooo puytr",leagueid);
+//             for(let l=0; l<leagues.length; l++) {
+//                 const leagueid = leagues[l].league.id;
+//                 // console.log("league ooo puytr",leagueid);
                 
-                  const response = await axios.get(`https://v3.football.api-sports.io/fixtures?league=${leagueid}&season=2024`,config);
-                  const fixturesresponse = response.data.response;
-                  // console.log('fixturesresponse.length',fixturesresponse.length, fixturesresponse, response)
-                  if(fixturesresponse.length != 0) {
-                      for(let i=0;i<fixturesresponse.length;i++) {
+//                   const response = await axios.get(`https://v3.football.api-sports.io/fixtures?league=${leagueid}&season=2024`,config);
+//                   const fixturesresponse = response.data.response;
+//                   // console.log('fixturesresponse.length',fixturesresponse.length, fixturesresponse, response)
+//                   if(fixturesresponse.length != 0) {
+//                       for(let i=0;i<fixturesresponse.length;i++) {
                       
-                          const fid = `${
-                              Math.floor(100000000 + Math.random() * 900000000)
-                          }`;
-                          let fixtureid = fixturesresponse[i].fixture.id;
-                          let fixdate = fixturesresponse[i].fixture.date;
-                          let fix_date = fixdate.split("T");
-                          // console.log('fixtureid',fixtureid);
-                          const fixturesExists = await Fixtures.findOne({"fixture.id":fixtureid});
-                          if(fixturesExists) {
-                              // console.log('Fixture Exists');
-                          }else {
-                            // console.log('Fixture created successfully__ ',fixtureid)
-                              const Fixture = await Fixtures.create({
-                                  fid: fid,
-                                  fixturedate: fix_date[0],
-                                  fixture: fixturesresponse[i].fixture,
-                                  league: fixturesresponse[i].league,
-                                  teams: fixturesresponse[i].teams,
-                                  goals: fixturesresponse[i].goals,
-                                  score: fixturesresponse[i].score,
+//                           const fid = `${
+//                               Math.floor(100000000 + Math.random() * 900000000)
+//                           }`;
+//                           let fixtureid = fixturesresponse[i].fixture.id;
+//                           let fixdate = fixturesresponse[i].fixture.date;
+//                           let fix_date = fixdate.split("T");
+//                           // console.log('fixtureid',fixtureid);
+//                           const fixturesExists = await Fixtures.findOne({"fixture.id":fixtureid});
+//                           if(fixturesExists) {
+//                               // console.log('Fixture Exists');
+//                           }else {
+//                             // console.log('Fixture created successfully__ ',fixtureid)
+//                               const Fixture = await Fixtures.create({
+//                                   fid: fid,
+//                                   fixturedate: fix_date[0],
+//                                   fixture: fixturesresponse[i].fixture,
+//                                   league: fixturesresponse[i].league,
+//                                   teams: fixturesresponse[i].teams,
+//                                   goals: fixturesresponse[i].goals,
+//                                   score: fixturesresponse[i].score,
                                   
-                              });
-                              if(Fixture) {
-                                  console.log('Fixture created successfully',Fixture)
-                              }
-                          }
+//                               });
+//                               if(Fixture) {
+//                                   console.log('Fixture created successfully',Fixture)
+//                               }
+//                           }
                           
-                      }
-                  }else {
+//                       }
+//                   }else {
 
-                  }
-                  // await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay time as needed
-            }
-        }
+//                   }
+//                   // await new Promise(resolve => setTimeout(resolve, 5000)); // Adjust the delay time as needed
+//             }
+//         }
 
-        }catch(error) 
-        {
-    //   console.log(error)
-    }
-};
+//         }catch(error) 
+//         {
+//     //   console.log(error)
+//     }
+// };
 
-LoadFixtureData()
+// LoadFixtureData()
 
 // // Start Agenda
 // (async () => {
@@ -171,75 +172,7 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
       "length":fixtures.length
     })
       
-  })
-
-  
-  // const loadCupFixtures = asyncHandler(async (req: any, res: any) => {
-  //   const priorityIds = [39, 2, 40, 41, 42, 43]; // Priority league IDs
-  
-  //   const statuses = ['NS', '1H', 'HT', '2H', 'ET', 'BT', 'P', 'SUSP', 'INT']; // Desired statuses
-
-  //   const fixtures = await Fixtures.aggregate([
-  //     {
-  //       $match: {
-  //         $or: [
-  //           { 'fixture.status.short': { $in: statuses } }, // Match the specified statuses
-  //           { current: true } // Include fixtures where current is true
-  //         ],
-  //         'league.season': 2024 // Match fixtures for the 2024 season
-  //       }
-  //     },
-  //     {
-  //       $group: {
-  //         _id: '$league.id', // Group by league ID
-  //         league: { $first: '$league' }, // Include league details
-  //         count: { $sum: 1 } // Count the number of fixtures in each group
-  //       }
-  //     },
-  //     { $sort: { _id: 1 } }, // Sort by priority index, then by league ID
-  //     { $project: { _id: 0, league: 1, count: 1 } } // Exclude _id and include league and count
-  //   ]);
-
-    
-
-  //   console.log(" set priority field ",await Fixtures.aggregate([
-  //     {
-  //       $match: {
-  //         $or: [
-  //           { 'fixture.status.short': { $in: statuses } },
-  //           { current: true }
-  //         ],
-  //         'league.season': 2024
-  //       }
-  //     },
-  //     {
-  //       $group: {
-  //         _id: '$league.id',
-  //         league: { $first: '$league' },
-  //         count: { $sum: 1 }
-  //       }
-  //     },
-  //     {
-  //       $addFields: {
-  //         sortPriority: {
-  //           $cond: {
-  //             if: { $in: ['$_id', priorityIds] },
-  //             then: { $indexOfArray: [priorityIds, '$_id'] },
-  //             else: 9999
-  //           }
-  //         }
-  //       }
-  //     }
-  //   ]));
-
-  //   res.json({
-  //     leagues: fixtures,
-  //     count: fixtures.length
-  //   });
-    
-
-  // });
-  
+  })  
   
   const loadCupFixtures = asyncHandler(async (req:any,res:any) => {
 
