@@ -76,5 +76,6 @@ const getLeagues = asyncHandler(async (req:any,res:any) => {
     res.json({
       leagues: leagues
     })  
-  })
+})
+
 module.exports = { getLeagues }  
