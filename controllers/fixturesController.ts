@@ -174,73 +174,107 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
   })
 
   
-  const loadCupFixtures = asyncHandler(async (req: any, res: any) => {
-    const priorityIds = [39, 2, 40, 41, 42, 43]; // Priority league IDs
+  // const loadCupFixtures = asyncHandler(async (req: any, res: any) => {
+  //   const priorityIds = [39, 2, 40, 41, 42, 43]; // Priority league IDs
   
-    const statuses = ['NS', '1H', 'HT', '2H', 'ET', 'BT', 'P', 'SUSP', 'INT']; // Desired statuses
+  //   const statuses = ['NS', '1H', 'HT', '2H', 'ET', 'BT', 'P', 'SUSP', 'INT']; // Desired statuses
+
+  //   const fixtures = await Fixtures.aggregate([
+  //     {
+  //       $match: {
+  //         $or: [
+  //           { 'fixture.status.short': { $in: statuses } }, // Match the specified statuses
+  //           { current: true } // Include fixtures where current is true
+  //         ],
+  //         'league.season': 2024 // Match fixtures for the 2024 season
+  //       }
+  //     },
+  //     {
+  //       $group: {
+  //         _id: '$league.id', // Group by league ID
+  //         league: { $first: '$league' }, // Include league details
+  //         count: { $sum: 1 } // Count the number of fixtures in each group
+  //       }
+  //     },
+  //     { $sort: { _id: 1 } }, // Sort by priority index, then by league ID
+  //     { $project: { _id: 0, league: 1, count: 1 } } // Exclude _id and include league and count
+  //   ]);
+
+    
+
+  //   console.log(" set priority field ",await Fixtures.aggregate([
+  //     {
+  //       $match: {
+  //         $or: [
+  //           { 'fixture.status.short': { $in: statuses } },
+  //           { current: true }
+  //         ],
+  //         'league.season': 2024
+  //       }
+  //     },
+  //     {
+  //       $group: {
+  //         _id: '$league.id',
+  //         league: { $first: '$league' },
+  //         count: { $sum: 1 }
+  //       }
+  //     },
+  //     {
+  //       $addFields: {
+  //         sortPriority: {
+  //           $cond: {
+  //             if: { $in: ['$_id', priorityIds] },
+  //             then: { $indexOfArray: [priorityIds, '$_id'] },
+  //             else: 9999
+  //           }
+  //         }
+  //       }
+  //     }
+  //   ]));
+
+  //   res.json({
+  //     leagues: fixtures,
+  //     count: fixtures.length
+  //   });
+    
+
+  // });
+  
+  
+  const loadCupFixtures = asyncHandler(async (req:any,res:any) => {
+
+    const statuses = ['NS', '1H', 'HT', '2H', 'ET', 'BT', 'P', 'SUSP', 'INT'];
 
     const fixtures = await Fixtures.aggregate([
       {
-        $match: {
-          $or: [
-            { 'fixture.status.short': { $in: statuses } }, // Match the specified statuses
-            { current: true } // Include fixtures where current is true
-          ],
-          'league.season': 2024 // Match fixtures for the 2024 season
-        }
-      },
-      {
-        $group: {
-          _id: '$league.id', // Group by league ID
-          league: { $first: '$league' }, // Include league details
-          count: { $sum: 1 } // Count the number of fixtures in each group
-        }
-      },
-      { $sort: { _id: 1 } }, // Sort by priority index, then by league ID
-      { $project: { _id: 0, league: 1, count: 1 } } // Exclude _id and include league and count
-    ]);
-
-    
-
-    console.log(" set priority field ",await Fixtures.aggregate([
-      {
-        $match: {
-          $or: [
-            { 'fixture.status.short': { $in: statuses } },
-            { current: true }
-          ],
+        $match: { 
+          'fixture.status.short': { $in: statuses },
           'league.season': 2024
-        }
+        } // Filter documents where league.country is 'World'
       },
       {
         $group: {
-          _id: '$league.id',
-          league: { $first: '$league' },
-          count: { $sum: 1 }
+          _id: '$league.id', // Group by league id
+          league: { $first: '$league' }, // Get the league details
+          count: { $sum: 1 } // Count the number of fixtures in each league
         }
       },
       {
-        $addFields: {
-          sortPriority: {
-            $cond: {
-              if: { $in: ['$_id', priorityIds] },
-              then: { $indexOfArray: [priorityIds, '$_id'] },
-              else: 9999
-            }
-          }
+        $project: {
+          _id: 0, // Exclude the default _id field
+          league: 1, // Include league details
+          count: 1 // Include fixture count
         }
-      }
-    ]));
-
+      },
+      {$sort: { _id: 1 }}
+    ])
+      
     res.json({
-      leagues: fixtures,
-      count: fixtures.length
-    });
-    
-
-  });
-  
-  
+      "fixtures":fixtures,
+      "length":fixtures.length
+    })
+      
+  })
   
   
 
