@@ -5,28 +5,55 @@ const Leagues = require("../models/leaguesModel");
 const axios = require("axios") 
 const Agenda = require("agenda");
 const dotenv = require("dotenv");
+const moment = require("moment");
 dotenv.config();
 
 process.env.TZ = 'Europe/London';
 
-// const agenda = new Agenda({ db: { address: process.env.MONGO_URI } });
-// process.env.TZ = 'Europe/London';
+interface League {
+  league: {
+    id: number;
+  };
+}
 
-// agenda.on('ready', async () => {
-//   console.log('Agenda connected to MongoDB and is ready fixtures');
+interface FixtureResponse {
+  fixture: {
+    id: number;
+    date: string;
+  };
+  league: any;
+  teams: any;
+  goals: any;
+  score: any;
+}
 
-//   // Start Agenda
-//   await agenda.start();
+const from = moment(new Date()).format("YYYY-MM-DD");
+const to = moment(from).add(30, 'days').format("YYYY-MM-DD");
 
-//   // Schedule the job to run every 10 minutes
-//   await agenda.every('2 minutes', 'LoadFixtureData');
-// }).on('error', (error: any) => {
-//   console.error('Agenda failed to connect:', error);
-// });
+type Config = {
+  headers: {
+    'x-rapidapi-key': string;
+    'x-rapidapi-host': string;
+  };
+};
+const agenda = new Agenda({ db: { address: process.env.MONGO_URI } });
+process.env.TZ = 'Europe/London';
 
-// console.log('fixtures ran');
+agenda.on('ready', async () => {
+  console.log('Agenda connected to MongoDB and is ready fixtures');
 
-// const LoadFixtureData = async () => {
+  // Start Agenda
+  await agenda.start();
+
+  // Schedule the job to run every 10 minutes
+  await agenda.every('2 minutes', 'LoadFixtureData');
+}).on('error', (error: any) => {
+  console.error('Agenda failed to connect:', error);
+});
+
+console.log('fixtures ran');
+
+// agenda.define('LoadFixtureData', async () => {
 //   console.log('agenda fixtures ran');
 //     try {
 //         // Clear existing data
@@ -47,6 +74,7 @@ process.env.TZ = 'Europe/London';
 //         if(leagues) {
           
 //             for(let l=0; l<leagues.length; l++) {
+//                 const priotyleagues = [1,2,3,4,15,36,39,45,46,47,61,62,71,78,88,94,135,137,140,143,179,181,526,528,529,531,547,550,556];
 //                 const leagueid = leagues[l].league.id;
 //                 // console.log("league ooo puytr",leagueid);
                 
@@ -95,9 +123,110 @@ process.env.TZ = 'Europe/London';
 //         {
 //     //   console.log(error)
 //     }
-// };
+// });
 
-// LoadFixtureData()
+// agenda.define('LoadFixtureData', async () => {
+//   console.log('Agenda load fixtures data ran');
+
+//   try {
+//     const config: Config = {
+//       headers: {
+//         'x-rapidapi-key': process.env.API_SPORTS!,
+//         'x-rapidapi-host': 'v3.football.api-sports.io',
+//       },
+//     };
+
+//     // Fetch all leagues for the current season
+//     const leagueResponse = await axios.get(
+//       'https://v3.football.api-sports.io/leagues?current=true&season=2024',
+//       config
+//     );
+
+//     const leagues: League[] = leagueResponse.data.response;
+//     if (!leagues) {
+//       console.log('No leagues found.');
+//       return;
+//     }
+
+//     const priorityLeagues = [
+//       1, 2, 3, 4, 15, 36, 39, 45, 46, 47, 61, 62, 71, 78, 88, 94, 135, 137,
+//       140, 143, 179, 181, 526, 528, 529, 531, 547, 550, 556,
+//     ];
+
+//     // Separate priority leagues and non-priority leagues
+//     const priorityLeagueIds = new Set(priorityLeagues);
+//     const priorityLeaguesData = leagues.filter((league) =>
+//       priorityLeagueIds.has(league.league.id)
+//     );
+//     const nonPriorityLeaguesData = leagues.filter(
+//       (league) => !priorityLeagueIds.has(league.league.id)
+//     );
+
+//     // Process fixtures for priority leagues first
+//     await processLeagues(priorityLeaguesData, config);
+
+//     // Then process remaining leagues
+//     await processLeagues(nonPriorityLeaguesData, config);
+//   } catch (error) {
+//     console.error('Error loading fixture data:', error);
+//   }
+// });
+
+/**
+ * Process leagues and their fixtures
+ * @param leagues - List of leagues to process
+ * @param config - Axios request config
+ */
+// async function processLeagues(leagues: League[], config: Config): Promise<void> {
+//   for (const league of leagues) {
+//     const leagueId = league.league.id;
+
+//     try {
+//       const response = await axios.get(
+//         `https://v3.football.api-sports.io/fixtures?league=${leagueId}&season=2024&from=${from}&to=${to}`,
+//         config
+//       );
+
+//       const fixturesResponse: FixtureResponse[] = response.data.response;
+
+//       if (fixturesResponse.length === 0) {
+//         console.log(`No fixtures found for league ID: ${leagueId}`);
+//         continue;
+//       }
+
+//       for (const fixture of fixturesResponse) {
+//         console.log("league fixture",fixture.fixture,fixture)
+//         const fixtureId = fixture.fixture.id;
+//         const existingFixture = await Fixtures.findOne({ 'fixture.id': fixtureId });
+
+//         if (existingFixture) {
+//           console.log(`Fixture already exists: ${fixtureId}`);
+//           continue;
+//         }
+
+//         const fixtureDate = fixture.fixture.date.split('T')[0];
+//         const randomFid = Math.floor(100000000 + Math.random() * 900000000);
+
+//         const newFixture = await Fixtures.create({
+//           fid: randomFid,
+//           fixturedate: fixtureDate,
+//           fixture: fixture.fixture,
+//           league: fixture.league,
+//           teams: fixture.teams,
+//           goals: fixture.goals,
+//           score: fixture.score,
+//         });
+
+//         if (newFixture) {
+//           console.log('Fixture created successfully:', newFixture);
+//         }
+//       }
+//     } catch (error) {
+//       console.error(`Error processing league ID ${leagueId}:`, error);
+//     }
+//   }
+// }
+
 
 // // Start Agenda
 // (async () => {
@@ -164,7 +293,7 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
               totalFixturesInCountry: { $sum: "$totalFixtures" }
           }
       },
-      {$sort: { _id: 1 }}
+      {$sort: { _id: -1 }}
     ])
       
     res.json({
@@ -199,7 +328,7 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
           count: 1 // Include fixture count
         }
       },
-      {$sort: { _id: 1 }}
+      {$sort: { _id: -1 }}
     ])
       
     res.json({
@@ -220,8 +349,7 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
         const leaguefixtures = await Fixtures.aggregate([
           {
             $match: { 
-              'league.id': leagueId,
-              'fixture.status.short': { $nin: ['FT', 'NS'] } // Exclude matches with status 'FT' (played) and 'NS' (not started)
+              'league.id': leagueId
             }
           },
           {
@@ -233,9 +361,9 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
             }
           },
           { $unwind: '$fixtures' },
-          { $sort: { 'fixtures.fixture.date': 1 } }, // Sorting by date for example
-          { $skip: (page - 1) * limit },
-          { $limit: limit },
+          { $sort: { 'fixtures.fixture.date': -1 } }, // Sorting by date for example
+          // { $skip: (page - 1) * limit },
+          // { $limit: limit },
           {
             $group: {
               _id: '$_id',
@@ -274,9 +402,9 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
               }
           },
           { $unwind: '$fixtures' },
-          { $sort: { 'fixtures.date': 1 } }, // Sorting by date for example
-          { $skip: (page - 1) * limit },
-          { $limit: limit },
+          { $sort: { 'fixtures.date': -1 } }, // Sorting by date for example
+          // { $skip: (page - 1) * limit },
+          // { $limit: limit },
           {
               $group: {
               _id: '$_id',
@@ -297,6 +425,47 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
       
   })
 
+  const loadFixturesByDatePage = asyncHandler(async (req:any,res:any) => {
+
+    const fixturedate = req.body.fixturedate;
+    console.log("fix ture date",fixturedate);
+    const page = req.body.currentPage;
+    const limit = req.body.limit;
+        
+    const fixturesbydate = await Fixtures.aggregate([
+        { $match: { 'fixturedate': fixturedate } },
+        {
+            $group: {
+            _id: '$league.id',
+            leagueName: { $first: '$league.name' },
+            leagueCountry: { $first: '$league.country' },
+            fixtures: { $push: '$$ROOT' }
+            }
+        },
+        { $unwind: '$fixtures' },
+        { $sort: { 'fixtures.date': -1 } }, // Sorting by date for example
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+        {
+            $group: {
+            _id: '$_id',
+            leagueName: { $first: '$leagueName' },
+            leagueCountry: { $first: '$leagueCountry' },
+            fixtures: { $push: '$fixtures' }
+            }
+        }
+    ])
+
+    // const count = await Fixtures.find({"league.id":leagueId});
+    console.log("fixtures by date result",fixturesbydate);
+    res.json({
+        "leaguefixtures":fixturesbydate,
+        totalPages: Math.ceil(fixturesbydate.length / limit),
+        currentPage: page,
+    })
+    
+})
+
   const loadTodaysFixtures = asyncHandler(async (req:any,res:any) => {
 
     const fixturedate = req.body.todaysdate;
@@ -316,9 +485,9 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
           }
       },
       { $unwind: '$fixtures' },
-      { $sort: { 'fixtures.fixture.date': 1 } }, // Sorting by fixture date
-      { $skip: (page - 1) * limit },
-      { $limit: limit },
+      { $sort: { 'fixtures.fixture.date': -1 } }, // Sorting by fixture date
+      // { $skip: (page - 1) * limit },
+      // { $limit: limit },
       {
           $group: {
               _id: '$_id',
@@ -334,10 +503,53 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
 
     res.json({
         "leaguefixtures":todaysfixtures,
-        totalPages: Math.ceil(todaysfixtures.length / limit),
+        totalPages: Math.ceil(todaysfixtures.length),
         currentPage: page,
     })
     
+})
+
+const loadTodaysFixturesPage = asyncHandler(async (req:any,res:any) => {
+
+  const fixturedate = req.body.todaysdate;
+  console.log("today's fixture",fixturedate);
+  const page = req.body.currentPage;
+  const limit = req.body.limit;
+  
+      
+  const todaysfixtures = await Fixtures.aggregate([
+    { $match: { 'fixturedate': fixturedate } },
+    {
+        $group: {
+            _id: '$league.id',
+            leagueName: { $first: '$league.name' },
+            leagueCountry: { $first: '$league.country' },
+            fixtures: { $push: '$$ROOT' }
+        }
+    },
+    { $unwind: '$fixtures' },
+    { $sort: { 'fixtures.fixture.date': -1 } }, // Sorting by fixture date
+    // { $skip: (page - 1) * limit },
+    // { $limit: limit },
+    {
+        $group: {
+            _id: '$_id',
+            leagueName: { $first: '$leagueName' },
+            leagueCountry: { $first: '$leagueCountry' },
+            fixtures: { $push: '$fixtures' }
+        }
+    }
+  ])
+
+  // const count = await Fixtures.find({"league.id":leagueId});
+  console.log("today's fixtures result",todaysfixtures);
+
+  res.json({
+      "leaguefixtures":todaysfixtures,
+      totalPages: Math.ceil(todaysfixtures.length),
+      currentPage: page,
+  })
+  
 })
 
     const searchFixturesResults = asyncHandler(async (req:any,res:any) => {
@@ -364,9 +576,9 @@ const loadFixtures = asyncHandler(async (req:any,res:any) => {
                 }
             },
             { $unwind: '$fixtures' },
-            { $sort: { 'fixtures.date': 1 } }, // Sorting by date for example
-            { $skip: (page - 1) * limit },
-            { $limit: limit },
+            { $sort: { 'fixtures.date': -1 } }, // Sorting by date for example
+            // { $skip: (page - 1) * limit },
+            // { $limit: limit },
             {
                 $group: {
                 _id: '$_id',
