@@ -195,30 +195,40 @@ console.log('fixtures ran');
 //       }
 
 //       for (const fixture of fixturesResponse) {
-//         console.log("league fixture",fixture.fixture,fixture)
+//         console.log("league fixture", fixture.fixture, fixture);
 //         const fixtureId = fixture.fixture.id;
 //         const existingFixture = await Fixtures.findOne({ 'fixture.id': fixtureId });
-
-//         if (existingFixture) {
-//           console.log(`Fixture already exists: ${fixtureId}`);
-//           continue;
-//         }
 
 //         const fixtureDate = fixture.fixture.date.split('T')[0];
 //         const randomFid = Math.floor(100000000 + Math.random() * 900000000);
 
-//         const newFixture = await Fixtures.create({
-//           fid: randomFid,
-//           fixturedate: fixtureDate,
-//           fixture: fixture.fixture,
-//           league: fixture.league,
-//           teams: fixture.teams,
-//           goals: fixture.goals,
-//           score: fixture.score,
-//         });
+//         if (existingFixture) {
+//           console.log(`Updating existing fixture: ${fixtureId}`);
 
-//         if (newFixture) {
-//           console.log('Fixture created successfully:', newFixture);
+//           existingFixture.fid = existingFixture.fid || randomFid; // Retain fid if it exists, otherwise assign a new one
+//           existingFixture.fixturedate = fixtureDate;
+//           existingFixture.fixture = fixture.fixture;
+//           existingFixture.league = fixture.league;
+//           existingFixture.teams = fixture.teams;
+//           existingFixture.goals = fixture.goals;
+//           existingFixture.score = fixture.score;
+
+//           const updatedFixture = await existingFixture.save();
+//           console.log('Fixture updated successfully:', updatedFixture);
+//         } else {
+//           const newFixture = await Fixtures.create({
+//             fid: randomFid,
+//             fixturedate: fixtureDate,
+//             fixture: fixture.fixture,
+//             league: fixture.league,
+//             teams: fixture.teams,
+//             goals: fixture.goals,
+//             score: fixture.score,
+//           });
+
+//           if (newFixture) {
+//             console.log('Fixture created successfully:', newFixture);
+//           }
 //         }
 //       }
 //     } catch (error) {
@@ -226,6 +236,7 @@ console.log('fixtures ran');
 //     }
 //   }
 // }
+
 
 
 // // Start Agenda

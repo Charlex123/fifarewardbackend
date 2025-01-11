@@ -19,25 +19,22 @@ const dotenv = require("dotenv");
 dotenv.config();
 const axios_1 = __importDefault(require("axios"));
 const FRDBettingFeatures_json_1 = __importDefault(require("../utils/FRDBettingFeatures.json"));
-console.log("hello paybets");
 const agenda = new Agenda({ db: { address: process.env.MONGO_URI, collection: 'agendaJobs' } });
 const Wprovider = new ethers_1.ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.bnbchain.org:8545");
 const walletPrivKey = process.env.FRD_PRIVATE_KEY;
 const BettingCA = process.env.FRD_BETTING_CA;
 const BettingFeaturesCA = process.env.FRD_BETTING_FEATURES_CA;
 let provider, signer;
-console.log(" procees bet psy ", provider, signer, BettingCA);
 agenda.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Agenda connected to MongoDB and is ready on processbet pay');
     // Start Agenda
     yield agenda.start();
     // Schedule the job to run every 10 minutes
-    yield agenda.every('1 minutes', 'ProcessBetsPayments');
+    yield agenda.every('1 minutes', 'BetPaySys');
 })).on('error', (error) => {
     console.error('Agenda failed to connect:', error);
 });
 // Main function to process bets
-agenda.define('ProcessBetsPayments', () => __awaiter(void 0, void 0, void 0, function* () {
+agenda.define('BetPaySys', () => __awaiter(void 0, void 0, void 0, function* () {
     provider = Wprovider;
     const wallet = new ethers_1.ethers.Wallet(walletPrivKey, provider);
     signer = provider.getSigner(wallet.address);
@@ -46,10 +43,8 @@ agenda.define('ProcessBetsPayments', () => __awaiter(void 0, void 0, void 0, fun
             const BetFeaturescontract = new ethers_1.ethers.Contract(BettingFeaturesCA, FRDBettingFeatures_json_1.default, signer);
             const Betcontract = new ethers_1.ethers.Contract(BettingCA, FRDBetting_json_1.default, signer);
             const loadBets = yield BetFeaturescontract.getBetsByStatus("open");
-            console.log("loaded open bets", loadBets);
             for (let i = 0; i < loadBets.length; i++) {
                 const matchId = loadBets[i].matchId; // Assuming matchId is of type BigNumber
-                console.log(`Match ID [${i}]:`, matchId.toString());
                 const tamount = loadBets[i].betamount;
                 const betId = loadBets[i].betId;
                 const config = {
@@ -58,19 +53,16 @@ agenda.define('ProcessBetsPayments', () => __awaiter(void 0, void 0, void 0, fun
                         'x-rapidapi-host': 'v3.football.api-sports.io'
                     }
                 };
-                console.log('agenda ooh 2 fixtures ran');
                 const response = yield axios_1.default.get(`https://v3.football.api-sports.io/fixtures?id=${matchId.toString()}`, config);
                 const fixture = response.data.response;
-                // console.log("fix ureee resp legue",fixture.length,fixture);
+                // console.log('agenda ooh 2 fixtures ran',fixture);
                 for (let f = 0; f < fixture.length; f++) {
                     const matchstat = fixture[f].fixture.status.short;
-                    console.log("fix ureee resp stat", matchstat);
                     const home = fixture[f].teams.home.name.trim();
                     const away = fixture[f].teams.away.name.trim();
-                    const homeresult = fixture[f].tems.home.winner;
-                    const awayresult = fixture[f].tems.home.winner;
+                    const homeresult = fixture[f].teams.home.winner;
+                    const awayresult = fixture[f].teams.home.winner;
                     const predictions = yield Betcontract.getPredictions(betId);
-                    console.log("prediction --", predictions);
                     if (matchstat === "FT") {
                         let closebet = false;
                         let reslt;
@@ -78,10 +70,11 @@ agenda.define('ProcessBetsPayments', () => __awaiter(void 0, void 0, void 0, fun
                             let prediction = predictions[p].prediction.trim();
                             let bettingteam = predictions[p].bettingteam.trim();
                             let totalbetamount = tamount * predictions.length;
+                            let participants = predictions[p].participants;
                             let user = predictions[p].useraddress.trim();
                             let sharepercentage = 80;
                             let amount;
-                            if (predictions.length === loadBets[i].totalbetparticipantscount) {
+                            if (predictions.length == loadBets[i].participants.length) {
                                 closebet = true;
                             }
                             else {
@@ -111,7 +104,8 @@ agenda.define('ProcessBetsPayments', () => __awaiter(void 0, void 0, void 0, fun
                                 reslt = "Null";
                                 amount = Math.ceil(tamount * (2 / 100));
                             }
-                            yield Betcontract.processBetPayments(betId, user, bettingteam.trim(), amount, closebet, reslt);
+                            const processbetpay = yield Betcontract.processBetPayments(betId, user, bettingteam.trim(), amount, closebet, reslt);
+                            console.log(" procee  bets apaya ", processbetpay);
                             // if(bettingteam.trim() === home && prediction.trim() ===  reslt) {
                             //     await Betcontract.payWinner(betId, user, prediction.trim(), bettingteam.trim(), amount, closebet, reslt);
                             // }
